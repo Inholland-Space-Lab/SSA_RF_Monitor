@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Curing Machine</title>
+</head>
+
+<body>
+    <h1>Pi Camera Live Stream Demo</h1>
+
+    <!-- This div is where the preview stream will come -->
+    <div id="streamdiv">
+    </div>
+    <br>
+
+    <!-- These buttons each call a javascript function in index.js -->
+    <button id='toggleButton' onclick="toggleButton()">Start Preview</button>
+    <br>
+    <button id='startBeltButton' onclick="startBelt()">Start Belt</button>
+    <button id='stopBeltButton' onclick="stopBelt()">Stop Belt</button>
+    <br>
+    <button id='pictureButton' onclick="pictureButton()">Take Picture</button>
+    <br>
+    <button id='browseButton' onclick="browseButton()">Download Pictures</button>
+
+    <!-- include the script -->
+    <script src="index.js"></script>
+</body>
+
+</html>
