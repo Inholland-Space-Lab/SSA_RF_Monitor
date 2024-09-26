@@ -30,6 +30,8 @@ class LCD():
         LCD.lcd.putstr(str)
 
     def write(msg):
+        if not hasattr(LCD, "lcd"):
+            return
         LCD.lcd.clear()
         LCD.lcd.move_to(0, 0)
         LCD.lcd.putstr(str(msg))
