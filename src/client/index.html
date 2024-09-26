@@ -1,29 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Curing Machine</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Dish Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #0055A4;
+        }
+
+        label {
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 15px 20px;
+            background-color: #0055A4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        button:hover {
+            background-color: #003f7f;
+        }
+
+        .current-position,
+        .extra-data {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eaeaea;
+            border-radius: 4px;
+        }
+
+        .extra-data h2 {
+            margin-top: 0;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Pi Camera Live Stream Demo</h1>
+    <div class="container">
+        <h1>Satellite Dish Control</h1>
 
-    <!-- This div is where the preview stream will come -->
-    <div id="streamdiv">
+        <div class="control-panel">
+            <label for="azimuth">Set Azimuth (Horizontal Angle):</label>
+            <input type="number" id="azimuth" name="azimuth" min="0" max="360"
+                placeholder="Enter azimuth angle (0-360)">
+
+            <label for="elevation">Set Elevation (Vertical Angle):</label>
+            <input type="number" id="elevation" name="elevation" min="0" max="90"
+                placeholder="Enter elevation angle (0-90)">
+
+            <button onclick="updateDishPosition()">Move Dish</button>
+        </div>
+
+        <div class="current-position">
+            <h2>Current Dish Position</h2>
+            <p>Azimuth: <span id="current-azimuth">N/A</span>°</p>
+            <p>Elevation: <span id="current-elevation">N/A</span>°</p>
+        </div>
+
+        <div class="extra-data">
+            <h2>Additional Data</h2>
+            <p>Signal Strength: <span id="signal-strength">N/A</span></p>
+            <p>Status: <span id="status">Idle</span></p>
+        </div>
     </div>
-    <br>
 
-    <!-- These buttons each call a javascript function in index.js -->
-    <button id='toggleButton' onclick="toggleButton()">Start Preview</button>
-    <br>
-    <button id='startBeltButton' onclick="startBelt()">Start Belt</button>
-    <button id='stopBeltButton' onclick="stopBelt()">Stop Belt</button>
-    <br>
-    <button id='pictureButton' onclick="pictureButton()">Take Picture</button>
-    <br>
-    <button id='browseButton' onclick="browseButton()">Download Pictures</button>
-
-    <!-- include the script -->
     <script src="index.js"></script>
 </body>
 
