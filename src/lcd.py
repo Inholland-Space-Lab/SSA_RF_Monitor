@@ -29,8 +29,8 @@ class LCD():
         LCD.lcd.move_to(0, 1)
         LCD.lcd.putstr(str)
 
-    def write(str):
+    def write(msg):
         LCD.lcd.clear()
         LCD.lcd.move_to(0, 0)
-        LCD.lcd.putstr(str)
+        LCD.lcd.putstr(str(msg))
         LCD.writeIP()

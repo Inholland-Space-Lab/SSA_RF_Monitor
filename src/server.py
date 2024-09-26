@@ -25,7 +25,7 @@ class Server(socketserver.ThreadingMixIn, server.HTTPServer):
             self.serve_forever()
         finally:
             # Stop serving when the script is interrupted
-            logger.info("Stream stopped.")
+            logger.info("Server stopped.")
 
     def start():
         Server.port = Config.getWebPort()
