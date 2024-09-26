@@ -20,7 +20,7 @@ class LCD():
             LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16)
             LCD.write("Started At:")
         except Exception as e:
-            logger.warning("Failed to Start LCD:" + e)
+            logger.warning("Failed to Start LCD:" + str(e))
 
     def writeIP():
         ip = str(os.popen('hostname -I').read())
