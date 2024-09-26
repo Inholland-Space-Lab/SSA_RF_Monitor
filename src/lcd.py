@@ -1,6 +1,5 @@
 import os
 import board
-import busio
 from lib.esp8266_i2c_lcd import I2cLcd
 import logging
 
@@ -16,7 +15,7 @@ class LCD():
 
         try:
 
-            i2c = busio.I2C(board.SCL, board.SDA)
+            i2c = board.I2C(board.SCL, board.SDA)
 
             LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16)
             LCD.write("Started At:")
