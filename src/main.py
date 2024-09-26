@@ -17,7 +17,7 @@ def sigterm_handler(_signo, _stack_frame):
     # Gracefully stop the server when the program exits or crashes
     logger.info("stopping...")
     Server.stop()
-    LCD.write("Stopped: " + _signo)
+    LCD.write("Stopped: " + str(_signo))
     sys.exit(0)
 
 
