@@ -33,7 +33,7 @@ class Dish:
         delayPlanner = DynamicDelayPlanner()
         navigation = DynamicNavigation()
 
-        acceleration = ExponentialAcceleration(stepperMotor, delayPlanner)
+        acceleration = ExponentialAcceleration(stepperMotor, delayPlanner, 1)
         return DRV8825MotorDriver(stepperMotor, acceleration, directionGpioPin, stepGpioPin, navigation)
 
     def start():
