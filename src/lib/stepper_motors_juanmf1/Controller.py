@@ -284,6 +284,8 @@ class BipolarStepperMotorDriver(MotorDriver):
 
         if sleepGpioPin is not None:
             self.sleepGpioPin = OutputDevice(sleepGpioPin)
+        else:
+            self.sleepGpioPin = None
 
         # Counts pulses, Clockwise adds, counterclockwise subtracts.
         self.currentPosition = 0
