@@ -27,7 +27,7 @@ class LCD():
         logger.debug(ip)
 
         LCD.lcd.move_to(0, 1)
-        LCD.lcd.putstr(str)
+        LCD.lcd.putstr(str(ip))
 
     def write(msg):
         if not hasattr(LCD, "lcd"):
