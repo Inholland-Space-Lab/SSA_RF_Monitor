@@ -14,6 +14,7 @@ python -m venv --system-site-packages ./.venv
 # ./.venv/bin/pip install lgpio pigpio gpio   # gpio pins
 ./.venv/bin/pip install gpiozero            # gpio pins
 ./.venv/bin/pip install adafruit-circuitpython-bno055 #bno055 library
+./.venv/bin/pip install multiprocess
 
 # Script name or pattern to look for
 PROGRAM_SCRIPT="main.py"
