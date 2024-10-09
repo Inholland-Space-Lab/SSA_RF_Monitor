@@ -11,7 +11,7 @@ from multiprocess.synchronize import process
 
 os.environ['PYTHONUNBUFFERED'] = '1'
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 _printStreams = {}
 _interpreter = None
 _globalPrintLock = threading.Lock()
@@ -60,10 +60,10 @@ def flush_streams(toPrint=None, stoppingApp=False):
         for thread_name, messages in localPrintItems.items():
             # Print the contents to stdout
             out += (f"\n@start thread dump {process.current_process().name} => {thread_name} ========================================\n"
-                   + "==========================================================================\n"
-                   + "\n".join([f"[{datetime.fromtimestamp(timestamp / 1e6).strftime('%H:%M:%S.%f')}] "
+                    + "==========================================================================\n"
+                    + "\n".join([f"[{datetime.fromtimestamp(timestamp / 1e6).strftime('%H:%M:%S.%f')}] "
                                 f"{message}" for timestamp, message in messages.items()])
-                   + f"\n@end thread dump {thread_name} =========================================\n")
+                    + f"\n@end thread dump {thread_name} =========================================\n")
         out += ("\n===================================================================================\n"
                 + "Thread prints Dump Complete =======================================================\n")
 
