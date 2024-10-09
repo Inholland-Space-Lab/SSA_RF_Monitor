@@ -15,9 +15,9 @@ from concurrent.futures import ThreadPoolExecutor, Future
 
 import multiprocess as mp
 from multiprocess.queues import Queue
-from stepper_motors_juanmf1.MultiProcessShared import SharedManager
+from lib.stepper_motors_juanmf1.MultiProcessShared import SharedManager
 
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint, get_current_thread_info, flush_streams_if_not_empty, \
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint, get_current_thread_info, flush_streams_if_not_empty, \
     flush_current_thread_only
 
 _WORKERS: list['BlockingQueueWorker'] = []

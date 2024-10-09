@@ -5,16 +5,16 @@ from concurrent.futures import Future
 from multiprocess import Value
 
 from RPi import GPIO
-from stepper_motors_juanmf1.UnipolarController import UnipolarMotorDriver
+from lib.stepper_motors_juanmf1.UnipolarController import UnipolarMotorDriver
 
-from stepper_motors_juanmf1.myMath import cmp
-from stepper_motors_juanmf1.BlockingQueueWorker import BlockingQueueWorker
-from stepper_motors_juanmf1.Controller import MotorDriver, ThirdPartyAdapter
-from stepper_motors_juanmf1.EventDispatcher import EventDispatcher
-from stepper_motors_juanmf1.SortedDict import SortedDict
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.myMath import cmp
+from lib.stepper_motors_juanmf1.BlockingQueueWorker import BlockingQueueWorker
+from lib.stepper_motors_juanmf1.Controller import MotorDriver, ThirdPartyAdapter
+from lib.stepper_motors_juanmf1.EventDispatcher import EventDispatcher
+from lib.stepper_motors_juanmf1.SortedDict import SortedDict
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
 
-from stepper_motors_juanmf1.ThreadOrderedPrint import flush_current_thread_only
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import flush_current_thread_only
 
 
 class Navigation:

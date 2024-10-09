@@ -2,9 +2,9 @@ import uuid
 
 from multiprocess import Manager
 
-from stepper_motors_juanmf1.BlockingQueueWorker import BlockingQueueWorker, MultiprocessObserver
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
-from stepper_motors_juanmf1.MultiProcessShared import SharedManager
+from lib.stepper_motors_juanmf1.BlockingQueueWorker import BlockingQueueWorker, MultiprocessObserver
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.MultiProcessShared import SharedManager
 
 
 class EventDispatcher(BlockingQueueWorker):

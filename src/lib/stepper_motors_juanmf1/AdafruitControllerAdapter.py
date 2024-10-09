@@ -4,12 +4,12 @@ import adafruit_motor.stepper as stepper
 from adafruit_motor.stepper import StepperMotor as AdafruitStepperDriver
 from adafruit_motor.stepper import FORWARD, SINGLE, MICROSTEP, INTERLEAVE, DOUBLE
 
-from stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
+from lib.stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
 
-from stepper_motors_juanmf1.StepperMotor import StepperMotor
-from stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver, ThirdPartyAdapter
+from lib.stepper_motors_juanmf1.StepperMotor import StepperMotor
+from lib.stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver, ThirdPartyAdapter
 
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
 
 
 class AdafruitStepperDriverAdapter(BipolarStepperMotorDriver, ThirdPartyAdapter):
@@ -17,8 +17,10 @@ class AdafruitStepperDriverAdapter(BipolarStepperMotorDriver, ThirdPartyAdapter)
     CW = GPIO.HIGH  # Clockwise Rotation
     CCW = GPIO.LOW  # Counterclockwise Rotation
 
-    ADAFRUIT_STYLES_TO_OURS = {SINGLE: 'Full', DOUBLE: 'Full', MICROSTEP: None, INTERLEAVE: 'Half'}
-    OUR_STYLES_TO_ADAFRUIT = {'Full': SINGLE, 'Half': INTERLEAVE, '1/2': INTERLEAVE}
+    ADAFRUIT_STYLES_TO_OURS = {
+        SINGLE: 'Full', DOUBLE: 'Full', MICROSTEP: None, INTERLEAVE: 'Half'}
+    OUR_STYLES_TO_ADAFRUIT = {'Full': SINGLE,
+                              'Half': INTERLEAVE, '1/2': INTERLEAVE}
 
     # Mode pins are static, as they are shared among Turret motors.
     RESOLUTION = {'Full': 1,
@@ -82,7 +84,8 @@ class AdafruitStepperDriverAdapter(BipolarStepperMotorDriver, ThirdPartyAdapter)
                          sharedMemory=sharedMemory,
                          isProxy=isProxy,
                          jobCompletionObserver=jobCompletionObserver)
-        print(f"self.adafruitStyle {self.adafruitStyle}; self.stepsMode {self.stepsMode} =>  {self.steppingModeMultiple}")
+        print(
+            f"self.adafruitStyle {self.adafruitStyle}; self.stepsMode {self.stepsMode} =>  {self.steppingModeMultiple}")
 
     def shutDownCoils(self):
         self.setEnableMode(False)
@@ -94,7 +97,8 @@ class AdafruitStepperDriverAdapter(BipolarStepperMotorDriver, ThirdPartyAdapter)
         pass
 
     def pulseStart(self, stepRelativeToJobStart=None):
-        self.adafruitDriver.onestep(direction=self.currentDirection, style=self.adafruitStyle)
+        self.adafruitDriver.onestep(
+            direction=self.currentDirection, style=self.adafruitStyle)
 
     def pulseStop(self):
         pass
@@ -157,5 +161,3 @@ class AdafruitStepperDriverAdapter(BipolarStepperMotorDriver, ThirdPartyAdapter)
 
     def release(self) -> None:
         self.adafruitDriver.release()
-
-

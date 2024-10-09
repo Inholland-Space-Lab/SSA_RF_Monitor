@@ -1,7 +1,7 @@
 import time
 import numpy as np
 
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
 
 
 def mt(s):

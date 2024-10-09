@@ -8,10 +8,10 @@ from RPi import GPIO
 from multiprocessing import current_process
 from sshkeyboard import stop_listening
 
-from stepper_motors_juanmf1 import BlockingQueueWorker
-from stepper_motors_juanmf1.ControllerFactory import MultiProcessingControllerFactory
-from stepper_motors_juanmf1.MultiProcessShared import SharedManager
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint, flush_streams
+from lib.stepper_motors_juanmf1 import BlockingQueueWorker
+from lib.stepper_motors_juanmf1.ControllerFactory import MultiProcessingControllerFactory
+from lib.stepper_motors_juanmf1.MultiProcessShared import SharedManager
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint, flush_streams
 
 def terminateProcess(process):
     print(process.pid, signal.SIGKILL)

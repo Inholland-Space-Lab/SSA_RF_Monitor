@@ -7,25 +7,25 @@ from multiprocess import Process, Value, Lock
 
 from typing import Callable
 
-from stepper_motors_juanmf1.AccelerationStrategy import (LinearAcceleration, AccelerationStrategy,
+from lib.stepper_motors_juanmf1.AccelerationStrategy import (LinearAcceleration, AccelerationStrategy,
                                                          ExponentialAcceleration,
                                                          CustomAccelerationPerPps, DynamicDelayPlanner,
                                                          StaticDelayPlanner,
                                                          InteractiveAcceleration, DelayPlanner)
 
 from adafruit_motor.stepper import StepperMotor as AdafruitStepperDriver
-from stepper_motors_juanmf1.AdafruitControllerAdapter import AdafruitStepperDriverAdapter
+from lib.stepper_motors_juanmf1.AdafruitControllerAdapter import AdafruitStepperDriverAdapter
 
-from stepper_motors_juanmf1.Controller import (DRV8825MotorDriver, TMC2209StandaloneMotorDriver,
+from lib.stepper_motors_juanmf1.Controller import (DRV8825MotorDriver, TMC2209StandaloneMotorDriver,
                                                DriverSharedPositionStruct, MotorDriver, BipolarStepperMotorDriver)
-from stepper_motors_juanmf1.Navigation import (DynamicNavigation, StaticNavigation, Navigation,
+from lib.stepper_motors_juanmf1.Navigation import (DynamicNavigation, StaticNavigation, Navigation,
                                                BasicSynchronizedNavigation)
 
-from stepper_motors_juanmf1.BlockingQueueWorker import MpQueue
-from stepper_motors_juanmf1.EventDispatcher import EventDispatcher, MultiprocessObserver
-from stepper_motors_juanmf1.StepperMotor import StepperMotor
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint, flush_streams_if_not_empty
-from stepper_motors_juanmf1.UnipolarController import UnipolarMotorDriver, ULN2003MotorDriver
+from lib.stepper_motors_juanmf1.BlockingQueueWorker import MpQueue
+from lib.stepper_motors_juanmf1.EventDispatcher import EventDispatcher, MultiprocessObserver
+from lib.stepper_motors_juanmf1.StepperMotor import StepperMotor
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint, flush_streams_if_not_empty
+from lib.stepper_motors_juanmf1.UnipolarController import UnipolarMotorDriver, ULN2003MotorDriver
 
 
 class ControllerBuilder:
@@ -259,7 +259,7 @@ class ControllerBuilder:
             self.withNavigationStyleStatic()
         if not self.accelerationStrategy:
             self.withNoAcceleration()
-            
+
         allParams = {
             'stepperMotor': self.stepperMotor,
             'directionGpioPin': self.directionGpioPin,
@@ -643,7 +643,7 @@ class MultiProcessingControllerFactory(SynchronizedControllerFactory):
                                                            latch. MainProcess will have keyed instances, Child process
                                                            one instance each.
         @return: A list of proxy drivers you can use on MainProcess to send stepping jobs to counterpart drivers in
-        child process.        
+        child process.
         """
         print("SPAWNING!!")
         syncNavigationCountDownLatch = (BasicSynchronizedNavigation.getInstance(

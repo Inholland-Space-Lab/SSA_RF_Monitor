@@ -1,10 +1,10 @@
 from RPi import GPIO
 
-from stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
-from stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver, ThirdPartyAdapter
-from stepper_motors_juanmf1.StepperMotor import StepperMotor
-from stepper_motors_juanmf1.Controller import NoDirectionPinDriver
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
+from lib.stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver, ThirdPartyAdapter
+from lib.stepper_motors_juanmf1.StepperMotor import StepperMotor
+from lib.stepper_motors_juanmf1.Controller import NoDirectionPinDriver
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
 
 
 class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
@@ -51,10 +51,12 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
 
         if stepsMode in UnipolarMotorDriver.Sequence.SUPPORTED_TYPES:
             sequence = stepsMode
-            stepsMode = UnipolarMotorDriver.Sequence.SEQUENCE_2_MICROSTEPPING_MODE_MAP[stepsMode]
+            stepsMode = UnipolarMotorDriver.Sequence.SEQUENCE_2_MICROSTEPPING_MODE_MAP[
+                stepsMode]
         else:
             sequenceKey = f"{stepsMode}-{pinsCount}"
-            sequence = UnipolarMotorDriver.Sequence.MICROSTEPPING_MODE_2_SEQUENCE_MAP[sequenceKey]
+            sequence = UnipolarMotorDriver.Sequence.MICROSTEPPING_MODE_2_SEQUENCE_MAP[
+                sequenceKey]
 
         self.sequence = UnipolarMotorDriver.Sequence(sequence)
 
@@ -128,30 +130,31 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
         FULL_3PIN = "3p-Full"
         HALF_3PIN = "3p-Half"
 
-        SUPPORTED_TYPES = [FULL, FULL_LOW_POWER, FULL_2PIN, HALF, FULL_3PIN, HALF_3PIN]
+        SUPPORTED_TYPES = [FULL, FULL_LOW_POWER,
+                           FULL_2PIN, HALF, FULL_3PIN, HALF_3PIN]
         SUPPORTED_MICROSTEPS = ["Full", "Half", "1/2"]
 
         PINS_USED_2_TYPES_MAP = {
-                4: [FULL, FULL_LOW_POWER, HALF],
-                3: [FULL_3PIN, HALF_3PIN],
-                2: [FULL_2PIN]}
+            4: [FULL, FULL_LOW_POWER, HALF],
+            3: [FULL_3PIN, HALF_3PIN],
+            2: [FULL_2PIN]}
 
         MICROSTEPPING_MODE_2_SEQUENCE_MAP = {
-                "Full-4": FULL,
-                "Full-3": FULL_3PIN,
-                "Full-2": FULL_2PIN,
-                "Half-4": HALF,
-                "Half-3": HALF_3PIN,
-                "1/2-4": HALF,
-                "1/2-3": HALF_3PIN}
+            "Full-4": FULL,
+            "Full-3": FULL_3PIN,
+            "Full-2": FULL_2PIN,
+            "Half-4": HALF,
+            "Half-3": HALF_3PIN,
+            "1/2-4": HALF,
+            "1/2-3": HALF_3PIN}
 
         SEQUENCE_2_MICROSTEPPING_MODE_MAP = {
-                FULL: "Full",
-                FULL_LOW_POWER: "Full",
-                HALF: "Half",
-                FULL_2PIN: "Full",
-                FULL_3PIN: "Full",
-                HALF_3PIN: "Half"}
+            FULL: "Full",
+            FULL_LOW_POWER: "Full",
+            HALF: "Half",
+            FULL_2PIN: "Full",
+            FULL_3PIN: "Full",
+            HALF_3PIN: "Half"}
 
         STEP_SEQUENCE = {
             FULL_2PIN: [(GPIO.LOW, GPIO.HIGH),   # 01
@@ -198,7 +201,8 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
         def getStepSequence(self, stepRelativeToJobStart):
             # Todo: Not sure if starting from zero on every stepping job is the right call.
             #   What happens when a job ends at a different phase and then the next starts at phase 0?
-            self.current = self.STEP_SEQUENCE[self.type][stepRelativeToJobStart % self.steppingMod]
+            self.current = self.STEP_SEQUENCE[self.type][stepRelativeToJobStart %
+                                                         self.steppingMod]
             return self.current
 
         def getCurrent(self):

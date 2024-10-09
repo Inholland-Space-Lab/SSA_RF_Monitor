@@ -6,12 +6,12 @@ from typing import Callable
 
 from RPi import GPIO
 
-from stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
-from stepper_motors_juanmf1.BlockingQueueWorker import BlockingQueueWorker
-from stepper_motors_juanmf1.EventDispatcher import EventDispatcher
-from stepper_motors_juanmf1.StepperMotor import StepperMotor
-from stepper_motors_juanmf1.myMath import sign, cmp
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
+from lib.stepper_motors_juanmf1.BlockingQueueWorker import BlockingQueueWorker
+from lib.stepper_motors_juanmf1.EventDispatcher import EventDispatcher
+from lib.stepper_motors_juanmf1.StepperMotor import StepperMotor
+from lib.stepper_motors_juanmf1.myMath import sign, cmp
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
 
 
 class NoDirectionPinDriver:

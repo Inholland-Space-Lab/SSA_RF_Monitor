@@ -6,10 +6,10 @@ import time
 
 from sshkeyboard import listen_keyboard, stop_listening
 
-from stepper_motors_juanmf1.AccelerationStrategy import CustomAccelerationPerPps, InteractiveAcceleration
-from stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver
-from stepper_motors_juanmf1.StepperMotor import GenericStepper
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint, flush_current_thread_only, flush_streams
+from lib.stepper_motors_juanmf1.AccelerationStrategy import CustomAccelerationPerPps, InteractiveAcceleration
+from lib.stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver
+from lib.stepper_motors_juanmf1.StepperMotor import GenericStepper
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint, flush_current_thread_only, flush_streams
 
 
 class Benchmark:

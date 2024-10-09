@@ -1,8 +1,8 @@
 from bisect import bisect_left
 
-from stepper_motors_juanmf1.myMath import cmp, sign
-from stepper_motors_juanmf1.StepperMotor import StepperMotor
-from stepper_motors_juanmf1.ThreadOrderedPrint import tprint
+from lib.stepper_motors_juanmf1.myMath import cmp, sign
+from lib.stepper_motors_juanmf1.StepperMotor import StepperMotor
+from lib.stepper_motors_juanmf1.ThreadOrderedPrint import tprint
 
 
 class AccelerationStrategy:
@@ -215,7 +215,7 @@ class CustomAccelerationPerPps(AccelerationStrategy):
                          steppingModeMultiple=steppingModeMultiple)
         """
         Curve of optimal acceleration.
-        array of tuples with max speed boost at given PPS starting from stepperMotor.MIN_PPS 
+        array of tuples with max speed boost at given PPS starting from stepperMotor.MIN_PPS
         [(minPPS, speedIncrement_1), (minPPS * speedIncrement_1, speedIncrement_2), ..., (maxPPS, 0)]
         """
         self.transformations = list(transformations) if transformations is not None else list(stepperMotor.TORQUE_CURVE)
