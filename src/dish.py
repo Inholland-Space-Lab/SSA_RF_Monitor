@@ -27,21 +27,21 @@ class Dish:
     #         motor.SetMicroStep('hardward', '1/4step')
 
     @staticmethod
-    def setupDriver(*, directionGpioPin, stepGpioPin) -> DRV8825MotorDriver:
+    def setupDriver(*, directionGpioPin, stepGpioPin, enableGpioPin) -> DRV8825MotorDriver:
         stepperMotor = GenericStepper(
             maxPps=2000, minPps=150, maxSleepTime=1/2000, minSleepTime=1/150)
         delayPlanner = DynamicDelayPlanner()
         navigation = DynamicNavigation()
 
         acceleration = ExponentialAcceleration(stepperMotor, delayPlanner, 1)
-        return DRV8825MotorDriver(stepperMotor=stepperMotor, accelerationStrategy=acceleration, directionGpioPin=directionGpioPin, stepGpioPin=stepGpioPin, navigation=navigation)
+        return DRV8825MotorDriver(stepperMotor=stepperMotor, accelerationStrategy=acceleration, directionGpioPin=directionGpioPin, stepGpioPin=stepGpioPin, enableGpioPin=enableGpioPin, navigation=navigation)
 
     def start():
         # start running the belt
         # TODO: start the belt continuously instead of 200 steps
         logger.debug("starting belt")
         motor1: DRV8825MotorDriver = Dish.setupDriver(
-            directionGpioPin=17, stepGpioPin=27)  # 22
+            directionGpioPin=17, stepGpioPin=27, enableGpioPin=22)  # 22
 
         motor1.stepClockWise(1000)
         # for motor in Belt.motors:
