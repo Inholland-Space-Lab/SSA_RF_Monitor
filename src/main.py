@@ -3,6 +3,7 @@ import logging
 import signal
 import sys
 from config import Config
+from dish import Dish
 from lcd import LCD
 from server import Server
 
@@ -31,5 +32,6 @@ if __name__ == "__main__":
         Config.start()
         LCD.start()
         Server.start()
+        Dish.start()
     finally:
         sigterm_handler(signal.SIGTERM, 0)
