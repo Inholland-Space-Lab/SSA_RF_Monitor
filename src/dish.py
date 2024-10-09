@@ -5,7 +5,7 @@ import time
 # from lib.stepper_motors_juanmf1 import (GenericStepper,
 #                                         DRV8825MotorDriver,
 #                                         )
-from lib.stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, LinearAcceleration
+from lib.stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, ExponentialAcceleration, LinearAcceleration
 from lib.stepper_motors_juanmf1.Controller import DRV8825MotorDriver
 from lib.stepper_motors_juanmf1.Navigation import DynamicNavigation
 from lib.stepper_motors_juanmf1.StepperMotor import GenericStepper
@@ -33,7 +33,7 @@ class Dish:
         delayPlanner = DynamicDelayPlanner()
         navigation = DynamicNavigation()
 
-        acceleration = LinearAcceleration(stepperMotor, delayPlanner)
+        acceleration = ExponentialAcceleration(stepperMotor, delayPlanner)
         return DRV8825MotorDriver(stepperMotor, acceleration, directionGpioPin, stepGpioPin, navigation)
 
     def start():
