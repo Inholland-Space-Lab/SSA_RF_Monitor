@@ -28,7 +28,8 @@ class Dish:
 
     @staticmethod
     def setupDriver(*, directionGpioPin, stepGpioPin) -> DRV8825MotorDriver:
-        stepperMotor = GenericStepper(maxPps=2000, minPps=150)
+        stepperMotor = GenericStepper(
+            maxPps=2000, minPps=150, maxSleepTime=1/2000, minSleepTime=1/150)
         delayPlanner = DynamicDelayPlanner()
         navigation = DynamicNavigation()
 
