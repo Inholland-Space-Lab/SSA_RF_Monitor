@@ -281,7 +281,9 @@ class BipolarStepperMotorDriver(MotorDriver):
         self.enableGpioPin = OutputDevice(enableGpioPin)
         self.modeGpioPins = modeGpioPins  # Microstep Resolution GPIO Pins
         self.stepsMode = stepsMode
-        self.sleepGpioPin = OutputDevice(sleepGpioPin)
+
+        if sleepGpioPin is not None:
+            self.sleepGpioPin = OutputDevice(sleepGpioPin)
 
         # Counts pulses, Clockwise adds, counterclockwise subtracts.
         self.currentPosition = 0
