@@ -31,7 +31,7 @@ if __name__ == "__main__":
     try:
         Config.start()
         LCD.start()
-        Server.start()
         Dish.start()
+        Server.start()
     finally:
         sigterm_handler(signal.SIGTERM, 0)
