@@ -34,7 +34,7 @@ class Dish:
         navigation = DynamicNavigation()
 
         acceleration = ExponentialAcceleration(stepperMotor, delayPlanner, 1)
-        return DRV8825MotorDriver(stepperMotor, acceleration, directionGpioPin, stepGpioPin, navigation)
+        return DRV8825MotorDriver(stepperMotor=stepperMotor, accelerationStrategy=acceleration, directionGpioPin=directionGpioPin, stepGpioPin=stepGpioPin, navigation=navigation)
 
     def start():
         # start running the belt
