@@ -51,6 +51,3 @@ class Dish:
         logger.info('stopping motors')
         # for motor in Belt.motors:
         #     motor.Stop()
-
-
-Belt.configure()
