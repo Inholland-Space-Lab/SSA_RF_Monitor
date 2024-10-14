@@ -4,7 +4,7 @@ import traceback
 from concurrent.futures import Future
 from multiprocess import Value
 
-from RPi import GPIO
+# from RPi import GPIO
 from lib.stepper_motors_juanmf1.UnipolarController import UnipolarMotorDriver
 
 from lib.stepper_motors_juanmf1.myMath import cmp
@@ -98,13 +98,15 @@ class StaticNavigation(Navigation):
                    controller.multiprocessObserver)
 
             if abs(targetPosition - position) == eventInAdvanceSteps:
-                EventDispatcher.instance().publishMainLoop(eventName + "Advance", {'position': position})
+                EventDispatcher.instance().publishMainLoop(
+                    eventName + "Advance", {'position': position})
 
             # Using pulse time to catch up with user logic and sleepTime computation.
-            Navigation.waitNextCycle(pulseStartNs=pulseStart, pulseDurationUs=accelerationStrategy.currentSleepTimeUs)
+            Navigation.waitNextCycle(
+                pulseStartNs=pulseStart, pulseDurationUs=accelerationStrategy.currentSleepTimeUs)
 
         accelerationStrategy.done()
-        controller.setDirection(GPIO.LOW)
+        controller.setDirection(False)
         return Navigation.get_completed_future()
 
     @staticmethod
@@ -129,8 +131,8 @@ class DynamicNavigation(Navigation):
             # Direction is set in position based acceleration' state machine.
             # Todo: computeSleepTimeUs returning position is obscure.
             position = accelerationStrategy.computeSleepTimeUs(controller.getCurrentPosition(),
-                                                        targetPosition,
-                                                        lambda d: controller.setDirection(d))
+                                                               targetPosition,
+                                                               lambda d: controller.setDirection(d))
 
             pulseCount += accelerationStrategy.realDirection
             controller.setCurrentPosition(position)
@@ -141,16 +143,17 @@ class DynamicNavigation(Navigation):
 
             if (abs(targetPosition - position) == eventInAdvanceSteps
                     and cmp(targetPosition, position) == controller.accelerationStrategy.realDirection):
-                EventDispatcher.instance().publishMainLoop(eventName + "Advance", {'position': position})
+                EventDispatcher.instance().publishMainLoop(
+                    eventName + "Advance", {'position': position})
 
-            Navigation.waitNextCycle(pulseStartNs=pulseStart, pulseDurationUs=accelerationStrategy.getCurrentSleepUs())
-
+            Navigation.waitNextCycle(
+                pulseStartNs=pulseStart, pulseDurationUs=accelerationStrategy.getCurrentSleepUs())
 
         # todo: check if still needed.
         accelerationStrategy.done()
         # Todo: GPIO.LOW is not controller specific. fix with controller.setDirection(controller.defaultDirection)
         #  or similar
-        controller.setDirection(GPIO.LOW)
+        controller.setDirection(False)
         return Navigation.get_completed_future()
 
     @staticmethod
@@ -167,10 +170,11 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
     _instances = {}
 
     @staticmethod
-    def getInstance(high=GPIO.HIGH, low=GPIO.LOW, countDownLatch=None, newMultitonKey=0):
+    def getInstance(high=True, low=False, countDownLatch=None, newMultitonKey=0):
         if newMultitonKey not in BasicSynchronizedNavigation._instances:
 
-            instance = BasicSynchronizedNavigation(high, low, countDownLatch, newMultitonKey)
+            instance = BasicSynchronizedNavigation(
+                high, low, countDownLatch, newMultitonKey)
             BasicSynchronizedNavigation._instances[newMultitonKey] = instance
         return BasicSynchronizedNavigation._instances[newMultitonKey]
 
@@ -178,13 +182,15 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
         """
         Mimics multiprocessing Value.value interface to use this container instead of Value in non-multiprocess scenario
         """
+
         def __init__(self):
             self.value = 0
 
-    def __init__(self, high=GPIO.HIGH, low=GPIO.LOW, countDownLatch=None, newMultitonKey=0):
+    def __init__(self, high=True, low=False, countDownLatch=None, newMultitonKey=0):
         assert newMultitonKey not in BasicSynchronizedNavigation._instances
         print(f"New instance of {type(self)}")
-        BlockingQueueWorker.__init__(self, self.__doGo, jobQueueMaxSize=4, workerName="SynchronizedNavigation")
+        BlockingQueueWorker.__init__(
+            self, self.__doGo, jobQueueMaxSize=4, workerName="SynchronizedNavigation")
         Navigation.__init__(self)
         # {startTimNs: [(controller, sleepTime), ...]}.
         self.pulsingControllers = SortedDict()
@@ -222,8 +228,9 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
         # Contiguous method calls in RPi are about 10uS apart. for a collision here it'd need to be 10K times faster.
         # this job is navigation level. there is a job per driver we need to complete independently.
         navJob = self.work([self.PulsingController(
-                controller, controller.stepperMotor.getMinSleepTime(), targetPosition, fn, interruptPredicate,
-                eventInAdvanceSteps=eventInAdvanceSteps, eventName=eventName, high=self.high)])
+            controller, controller.stepperMotor.getMinSleepTime(
+            ), targetPosition, fn, interruptPredicate,
+            eventInAdvanceSteps=eventInAdvanceSteps, eventName=eventName, high=self.high)])
         return controller.currentJob.block
 
     def latchDown(self, pulsingController):
@@ -241,7 +248,8 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
     def __doGo(self, pulsingController):
         if self.latchDown(pulsingController):
             return
-        delegatedDuePulses = []  # When no available Pins send pulse instruction to Driver.
+        # When no available Pins send pulse instruction to Driver.
+        delegatedDuePulses = []
         duePulses = []
         duePulsesStates = []
         bipolarStepPins = []
@@ -258,7 +266,8 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
                 while self.pulsingControllers:
                     duePulseTime, pulsingController = self.pulsingControllers.popitem()
                     if duePulseTime > pulseTime:
-                        self.putPulsingController(duePulseTime, pulsingController)
+                        self.putPulsingController(
+                            duePulseTime, pulsingController)
                         break
                     if self.checkDone(pulsingController):
                         continue
@@ -269,14 +278,20 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
                                                          delegatedDuePulses)
 
                 if duePulses or delegatedDuePulses:
-                    GPIO.output(duePulses, duePulsesStates)
+                    # GPIO.output(duePulses, duePulsesStates)
+                    for duePulse, duePulseState in zip(duePulses, duePulsesStates):
+                        duePulse.value = duePulseState
+
                     for thirdPartyAdapter in delegatedDuePulses:
                         thirdPartyAdapter.pulseStart()
                     self.updateSleepTimes(dueControllers, pulseTime, count=2)
                     while pulseTime + self.driverPulseTimeNs > time.monotonic_ns():
                         # Small active wait in case updateSleepTimes() didn't consume Driver's min pulse time.
                         pass
-                    GPIO.output(bipolarStepPins, self.low)
+                    # GPIO.output(bipolarStepPins, self.low)
+                    for bipolarStepPin in bipolarStepPins:
+                        bipolarStepPin.value = self.low
+
                     for thirdPartyAdapter in delegatedDuePulses:
                         thirdPartyAdapter.pulseStop()
                     # Finish with remaining controllers after sending LOW
@@ -321,7 +336,8 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
                 (pulsingController.controller.accelerationStrategy.computeSleepTimeUs(
                     pulsingController.controller.getCurrentPosition(), pulsingController.targetPosition,
                     lambda d: pulsingController.controller.setDirection(d))))
-            nextPulse = pulseTimeNs + 1000 * pulsingController.controller.accelerationStrategy.getCurrentSleepUs()
+            nextPulse = pulseTimeNs + 1000 * \
+                pulsingController.controller.accelerationStrategy.getCurrentSleepUs()
             self.putPulsingController(nextPulse, pulsingController)
 
             if pulsingController.fn is not None:
@@ -357,7 +373,7 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
     class PulsingController:
         # TODO: Recycle instances to prevent garbage collection. Can help too with keeping pulseCount on interruptions
         def __init__(self, controller: MotorDriver, sleepTime, targetPosition, fn=None, interruptPredicate=None,
-                     eventInAdvanceSteps=None, eventName="steppingComplete", high=GPIO.HIGH):
+                     eventInAdvanceSteps=None, eventName="steppingComplete", high=True):
             self.controller: MotorDriver = controller
 
             if isinstance(controller, UnipolarMotorDriver):
@@ -396,7 +412,8 @@ class BasicSynchronizedNavigation(Navigation, BlockingQueueWorker):
                               bipolarStepPins: list, delegatedDuePulses):
             dueControllers.append(self)
             duePulses.extend(self.controller.stepGpioPin)
-            duePulsesStates.extend(self.controller.sequence.getStepSequence(self.pulseCount))
+            duePulsesStates.extend(
+                self.controller.sequence.getStepSequence(self.pulseCount))
             self.pulseCount += self.controller.accelerationStrategy.realDirection
 
         def addBipolarPulses(self, duePulses: list, duePulsesStates, dueControllers: list,

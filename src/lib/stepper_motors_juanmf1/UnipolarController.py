@@ -1,4 +1,4 @@
-from RPi import GPIO
+# from RPi import GPIO
 
 from lib.stepper_motors_juanmf1.AccelerationStrategy import AccelerationStrategy
 from lib.stepper_motors_juanmf1.Controller import BipolarStepperMotorDriver, ThirdPartyAdapter
@@ -13,7 +13,7 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
     Unipolar don't use pulse time as bipolar, 2 represents a small enough pulse to prevent wait.
     """
 
-    DISABLE_STATE = (GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW)
+    DISABLE_STATE = (False, False, False, False)
     """
     When useHoldingTorque if False shitting down coils after stepping.
     """
@@ -85,13 +85,14 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
     def _initGpio(self, stepsMode):
         self._oneTimeInit()
 
-        GPIO.setup(self.stepGpioPin, GPIO.OUT)
-        GPIO.output(self.stepGpioPin, GPIO.LOW)
+        # GPIO.setup(self.stepGpioPin, GPIO.OUT)
+        # GPIO.output(self.stepGpioPin, False)
+        self.stepGpioPin.off()
 
     def setDirection(self, directionState):
         # Todo: update sharedMemory
-        # Translating potential negative values to GPIO.LOW
-        directionState = GPIO.HIGH if directionState == GPIO.HIGH else GPIO.LOW
+        # Translating potential negative values to False
+        directionState = True if directionState == True else False
         self.currentDirection = directionState
 
     def setSleepMode(self, sleepOn=False):
@@ -102,20 +103,24 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
         """
         if self.sleepGpioPin is None:
             return
-        state = GPIO.LOW if sleepOn else GPIO.HIGH
-        GPIO.output(self.sleepGpioPin, state)
+        state = False if sleepOn else True
+        # GPIO.output(self.sleepGpioPin, state)
+        self.sleepGpioPin.value = state
 
     def setEnableMode(self, enableOn=True):
         """
         Achieve Enable/Disable by shutting down coils
         """
         state = self.sequence.getCurrent() if enableOn else self.DISABLE_STATE
-        GPIO.output(self.stepGpioPin, state)
+        # GPIO.output(self.stepGpioPin, state)
+        self.stepGpioPin.value = state
 
     def pulseStart(self, stepRelativeToJobStart=None):
-        GPIO.output(
-            self.stepGpioPin,
-            self.sequence.getStepSequence(stepRelativeToJobStart))
+        # GPIO.output(
+        #     self.stepGpioPin,
+        #     self.sequence.getStepSequence(stepRelativeToJobStart))
+        self.stepGpioPin.value = self.sequence.getStepSequence(
+            stepRelativeToJobStart)
 
     def pulseStop(self):
         # Not in Unipolar
@@ -157,39 +162,39 @@ class UnipolarMotorDriver(BipolarStepperMotorDriver, NoDirectionPinDriver):
             HALF_3PIN: "Half"}
 
         STEP_SEQUENCE = {
-            FULL_2PIN: [(GPIO.LOW, GPIO.HIGH),   # 01
-                        (GPIO.HIGH, GPIO.HIGH),  # 11
-                        (GPIO.HIGH, GPIO.LOW)],  # 10
+            FULL_2PIN: [(False, True),   # 01
+                        (True, True),  # 11
+                        (True, False)],  # 10
 
-            FULL:  [(GPIO.HIGH, GPIO.LOW, GPIO.HIGH, GPIO.LOW),   # 1010
-                    (GPIO.LOW, GPIO.HIGH, GPIO.HIGH, GPIO.LOW),   # 0110
-                    (GPIO.LOW, GPIO.HIGH, GPIO.LOW, GPIO.HIGH),   # 0101
-                    (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH)],  # 1001
+            FULL:  [(True, False, True, False),   # 1010
+                    (False, True, True, False),   # 0110
+                    (False, True, False, True),   # 0101
+                    (True, False, False, True)],  # 1001
 
-            FULL_LOW_POWER:  [(GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.LOW),   # 1000
-                              (GPIO.LOW, GPIO.LOW, GPIO.HIGH, GPIO.LOW),   # 0010
-                              (GPIO.LOW, GPIO.HIGH, GPIO.LOW, GPIO.LOW),   # 0100
-                              (GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.HIGH)],  # 0001
+            FULL_LOW_POWER:  [(True, False, False, False),   # 1000
+                              (False, False, True, False),   # 0010
+                              (False, True, False, False),   # 0100
+                              (False, False, False, True)],  # 0001
 
-            HALF: [(GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.LOW),    # 1000
-                   (GPIO.HIGH, GPIO.LOW, GPIO.HIGH, GPIO.LOW),   # 1010
-                   (GPIO.LOW, GPIO.LOW, GPIO.HIGH, GPIO.LOW),    # 0010
-                   (GPIO.LOW, GPIO.HIGH, GPIO.HIGH, GPIO.LOW),   # 0110
-                   (GPIO.LOW, GPIO.HIGH, GPIO.LOW, GPIO.LOW),    # 0100
-                   (GPIO.LOW, GPIO.HIGH, GPIO.LOW, GPIO.HIGH),   # 0101
-                   (GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.HIGH),    # 0001
-                   (GPIO.HIGH, GPIO.LOW, GPIO.LOW, GPIO.HIGH)],  # 1001
+            HALF: [(True, False, False, False),    # 1000
+                   (True, False, True, False),   # 1010
+                   (False, False, True, False),    # 0010
+                   (False, True, True, False),   # 0110
+                   (False, True, False, False),    # 0100
+                   (False, True, False, True),   # 0101
+                   (False, False, False, True),    # 0001
+                   (True, False, False, True)],  # 1001
 
-            FULL_3PIN: [(GPIO.HIGH, GPIO.LOW, GPIO.LOW),   # 100
-                        (GPIO.LOW, GPIO.LOW, GPIO.HIGH),   # 001
-                        (GPIO.LOW, GPIO.HIGH, GPIO.LOW)],  # 010
+            FULL_3PIN: [(True, False, False),   # 100
+                        (False, False, True),   # 001
+                        (False, True, False)],  # 010
 
-            HALF_3PIN: [(GPIO.HIGH, GPIO.LOW, GPIO.LOW),    # 100
-                        (GPIO.HIGH, GPIO.LOW, GPIO.HIGH),   # 101
-                        (GPIO.LOW, GPIO.LOW, GPIO.HIGH),    # 001
-                        (GPIO.LOW, GPIO.HIGH, GPIO.HIGH),   # 011
-                        (GPIO.LOW, GPIO.HIGH, GPIO.LOW),    # 010
-                        (GPIO.HIGH, GPIO.HIGH, GPIO.LOW)]}  # 110
+            HALF_3PIN: [(True, False, False),    # 100
+                        (True, False, True),   # 101
+                        (False, False, True),    # 001
+                        (False, True, True),   # 011
+                        (False, True, False),    # 010
+                        (True, True, False)]}  # 110
 
         # https://github.com/d235j/AccelStepper/blob/master/AccelStepper/AccelStepper.cpp
         def __init__(self, sequenceType):
