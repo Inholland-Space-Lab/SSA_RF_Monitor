@@ -1,10 +1,5 @@
 import logging
-import multiprocessing
 from config import Config
-import time
-# from lib.stepper_motors_juanmf1 import (GenericStepper,
-#                                         DRV8825MotorDriver,
-#                                         )
 from lib.stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, ExponentialAcceleration, LinearAcceleration
 from lib.stepper_motors_juanmf1.Controller import DRV8825MotorDriver
 from lib.stepper_motors_juanmf1.Navigation import DynamicNavigation
@@ -43,11 +38,14 @@ class Dish:
         motor1: DRV8825MotorDriver = Dish.setupDriver(
             directionGpioPin=17, stepGpioPin=27, enableGpioPin=22)  # 22
 
-        motor1.stepClockWise(200)
+        motor1.stepClockWise(200, fn=Dish.positionListener)
         # for motor in Belt.motors:
         #     speed = Config.getBeltSpeed()
         #     direction = Config.getBeltDirection()
         #     motor.TurnStep(Dir=direction, steps=0, stepdelay=1/speed)
+
+    def positionListener(currentPos, targetPos, dir):
+        logger.debug(currentPos)
 
     def stop():
         # stop each of the motors
