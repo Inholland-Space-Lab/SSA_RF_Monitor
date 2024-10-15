@@ -1,13 +1,11 @@
 import logging
 from config import Config
-from lib.stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, ExponentialAcceleration, LinearAcceleration
-from lib.stepper_motors_juanmf1.Controller import DRV8825MotorDriver
-from lib.stepper_motors_juanmf1.Navigation import DynamicNavigation
-from lib.stepper_motors_juanmf1.StepperMotor import GenericStepper
+from stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, ExponentialAcceleration, LinearAcceleration
+from stepper_motors_juanmf1.Controller import DRV8825MotorDriver
+from stepper_motors_juanmf1.Navigation import DynamicNavigation
+from stepper_motors_juanmf1.StepperMotor import GenericStepper
 
 logger = logging.getLogger(__name__)
-
-# The Belt class is not functional, it serves as inspiration as it also uses two stepper motors
 
 
 class Dish:
@@ -34,18 +32,20 @@ class Dish:
     def start():
         # start running the belt
         # TODO: start the belt continuously instead of 200 steps
-        logger.debug("starting dish")
+        logger.info("starting dish")
         motor1: DRV8825MotorDriver = Dish.setupDriver(
             directionGpioPin=17, stepGpioPin=27, enableGpioPin=22)  # 22
 
-        motor1.stepClockWise(200, fn=Dish.positionListener)
+        logger.info(motor1.getCurrentPosition())
+        motor1.stepClockWise(200)
+        logger.info(motor1.getCurrentPosition())
         # for motor in Belt.motors:
         #     speed = Config.getBeltSpeed()
         #     direction = Config.getBeltDirection()
         #     motor.TurnStep(Dir=direction, steps=0, stepdelay=1/speed)
 
     def positionListener(currentPos, targetPos, dir):
-        logger.debug(currentPos)
+        logger.info(currentPos)
 
     def stop():
         # stop each of the motors

@@ -39,8 +39,13 @@ class Server(socketserver.ThreadingMixIn, server.HTTPServer):
     def stop():
         # This shuts the instance down and stops all camera streams
         logger.debug('stopping server')
-        Server.instance.shutdown()
-        Server.instance.server_close()
+        try:
+            Server.instance.shutdown()
+            Server.instance.server_close()
+        except AttributeError:
+            return
+        # Server.instance.shutdown()
+        # Server.instance.server_close()
 
 
 class RequestHandler(server.SimpleHTTPRequestHandler):

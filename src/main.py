@@ -2,9 +2,14 @@
 import logging
 import signal
 import sys
-import platform
-import gpiozero
-from gpiozero.pins.mock import MockFactory
+try:
+    import RPi.GPIO as GPIO
+    print("Detected Raspberry Pi environment.")
+except:
+    import Mock.GPIO as GPIO
+    print("Not a Raspberry Pi. Switching to Mock.")
+    sys.modules['RPi.GPIO'] = GPIO
+
 from config import Config
 from dish import Dish
 from lcd import LCD
@@ -17,23 +22,11 @@ logging.basicConfig(handlers=[logging.FileHandler("logs/latest.log"),
                               logging.StreamHandler(sys.stdout)],
                     encoding='utf-8', level=logging.DEBUG)
 
-# Try to set up Raspberry Pi GPIO pin factory
-try:
-    # Check if we're on a Raspberry Pi
-    if 'arm' in platform.uname().machine:
-        logger.debug("Detected Raspberry Pi environment.")
-    else:
-        raise ImportError("Not a Raspberry Pi")
-
-except ImportError:
-    # If the platform is not Raspberry Pi, switch to mock
-    logger.warning("Not a Raspberry Pi. Switching to MockFactory.")
-    gpiozero.Device.pin_factory = MockFactory()
-
 
 def sigterm_handler(_signo, _stack_frame):
     # Gracefully stop the server when the program exits or crashes
     logger.info("stopping...")
+    GPIO.cleanup()
     Server.stop()
     LCD.write("Stopped: " + str(_signo))
     sys.exit(0)
@@ -50,5 +43,7 @@ if __name__ == "__main__":
         LCD.start()
         Dish.start()
         Server.start()
+    except Exception as e:
+        logger.error(str(e))
     finally:
         sigterm_handler(signal.SIGTERM, 0)

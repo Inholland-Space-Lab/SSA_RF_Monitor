@@ -11,10 +11,12 @@ python -m venv --system-site-packages ./.venv
 
 # Install python packages into the venv
 ./.venv/bin/pip install numpy --upgrade
-# ./.venv/bin/pip install lgpio pigpio gpio   # gpio pins
-./.venv/bin/pip install gpiozero              # gpio pins
+./.venv/bin/pip uninstall gpiozero              # gpio pins
+./.venv/bin/pip install rpi-lgpio     # gpio pins
+./.venv/bin/pip install Mock.GPIO
 ./.venv/bin/pip install adafruit-circuitpython-bno055 #bno055 library
 ./.venv/bin/pip install multiprocess
+./.venv/bin/pip install -i https://test.pypi.org/simple/ stepper-motors-juanmf1
 
 # List installed packages
 ./.venv/bin/pip list
