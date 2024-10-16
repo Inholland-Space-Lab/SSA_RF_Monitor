@@ -32,6 +32,7 @@ class Stepper():
         self.step_pin = step_pin
         self.dir_pin = dir_pin
         self.enable_pin = enable_pin
+        self.position = 0
 
         # Setup the thread and queue that will run the motor
         self.job_queue = queue.Queue()
