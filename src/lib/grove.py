@@ -38,7 +38,7 @@ Examples:
 '''
 
 # from grove.display.base import *
-from grove.i2c import Bus
+# from grove.i2c import Bus
 import time
 import sys
 import smbus2 as smbus
