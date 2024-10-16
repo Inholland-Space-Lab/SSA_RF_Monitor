@@ -33,7 +33,7 @@ class Stepper():
     def steps_per_rev(self):
         return self.resolution * self.gear_ratio
 
-    def __init__(self, step_pin, dir_pin, enable_pin, resolution=200, gear_ratio=(38/187)):
+    def __init__(self, step_pin, dir_pin, enable_pin, resolution=200, gear_ratio=(19+(38/187))):
         # Define Pins
         logger.info("Creating Stepper")
         self.step_pin = step_pin
