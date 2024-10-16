@@ -11,6 +11,7 @@ python -m venv --system-site-packages ./.venv
 
 # Install python packages into the venv
 ./.venv/bin/pip install numpy --upgrade
+./.venv/bin/pip uninstall RPi.GPIO              # gpio pins
 ./.venv/bin/pip uninstall gpiozero              # gpio pins
 ./.venv/bin/pip install rpi-lgpio     # gpio pins
 ./.venv/bin/pip install Mock.GPIO
