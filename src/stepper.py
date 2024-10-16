@@ -63,9 +63,9 @@ class Stepper():
             self.job_queue.task_done()  # Signal that the job is done
 
     def home(self):
-        self.do_steps_sync(Direction.clockwise, int(self.steps_per_rev / 4), 1)
+        self.do_steps_sync(Direction.clockwise, int(self.steps_per_rev / 4))
         self.do_steps_sync(Direction.counter_clockwise,
-                           int(self.steps_per_rev / 4), 1)
+                           int(self.steps_per_rev / 4))
 
     def stop(self):
         # Stop the worker by adding a None job to signal shutdown
@@ -89,15 +89,15 @@ class Stepper():
 
         if steps > 0:
             self.do_steps_sync(
-                Direction.counter_clockwise, steps, 0.1)
+                Direction.counter_clockwise, steps)
         else:
             self.do_steps_sync(
-                Direction.clockwise, -steps, 0.1)
+                Direction.clockwise, -steps)
 
     def do_steps_sync(self, *args):
         self.job_queue.put(args)
 
-    def do_steps(self, direction, step_count, delay_ms):
+    def do_steps(self, direction, step_count, delay_ms=0.1):
         if direction:
             self.position += step_count
         else:
