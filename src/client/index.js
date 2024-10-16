@@ -33,3 +33,15 @@ function updateDishPosition() {
             },
           })
 }
+
+function zeroDish() {
+
+    fetch(`${window.location.origin}/api/zero`,
+        {
+            method: "POST",
+            body: "",
+            headers: {
+              "Content-type": "application/json",
+            },
+          })
+}

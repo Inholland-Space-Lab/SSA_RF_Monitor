@@ -36,6 +36,10 @@ class Dish:
         Dish.azimuth_motor.move_to_sync(degrees=azimuth)
 
     @staticmethod
+    def zero():
+        Dish.azimuth_motor.position = 0
+
+    @staticmethod
     def positionListener(currentPos, targetPos, dir):
         logger.info(currentPos)
 

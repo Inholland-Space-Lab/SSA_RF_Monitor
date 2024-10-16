@@ -92,6 +92,9 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             logger.info(f"Received new position: {azimuth}, {elevation}")
             Dish.set_target(float(azimuth), float(elevation))
             self.redirectHome()
+        elif self.path == "/api/zero":
+            Dish.zero()
+            self.redirectHome()
 
     def redirectHome(self, permanently=False):
         if permanently:
