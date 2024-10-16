@@ -1,6 +1,7 @@
 import os
 import board
-from lib.esp8266_i2c_lcd import I2cLcd
+# from lib.esp8266_i2c_lcd import I2cLcd
+import i2c_lcd
 import logging
 
 logger = logging.getLogger(__name__)
@@ -8,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class LCD():
 
-    lcd: I2cLcd
+    lcd: i2c_lcd
 
     def start():
         logger.info("Starting LCD")
@@ -17,7 +18,8 @@ class LCD():
 
             i2c = board.I2C()
 
-            LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16)
+            # LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16)
+            LCD.lcd = i2c_lcd.lcd()
             LCD.write("Started At:")
         except Exception as e:
             logger.warning("Failed to Start LCD: " + str(e))
