@@ -2,7 +2,6 @@ import logging
 import time
 from config import Config
 from RPi import GPIO
-from RpiMotorLib import RpiMotorLib
 
 from stepper import Direction, Stepper
 
