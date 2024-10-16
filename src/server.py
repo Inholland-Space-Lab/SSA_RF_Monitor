@@ -90,7 +90,7 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             azimuth = data.get('azimuth')
             elevation = data.get('elevation')
             logger.info(f"Received new position: {azimuth}, {elevation}")
-            Dish.set_target(azimuth, elevation)
+            Dish.set_target(float(azimuth), float(elevation))
             self.redirectHome()
 
     def redirectHome(self, permanently=False):
