@@ -18,4 +18,18 @@ function updateDishPosition() {
     setTimeout(() => {
         document.getElementById('status').textContent = 'Position Reached';
     }, 2000); // Simulate a delay for movement
+
+    fetch(`${window.location.origin}/api/set-target`,
+        {
+            method: "POST",
+            body: JSON
+            .stringify
+            ({
+              azimuth: azimuth,
+              elevation: elevation,
+            }),
+            headers: {
+              "Content-type": "application/json",
+            },
+          })
 }

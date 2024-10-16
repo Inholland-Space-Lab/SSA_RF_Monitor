@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import socketserver
@@ -69,6 +70,26 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
         else:
             # An unknown request was sent
             server.SimpleHTTPRequestHandler.do_GET(self)
+
+    def do_POST(self):
+        if self.path == '/':
+            self.redirectHome()
+        elif self.path == "/api/set-target":
+
+            # Get the length of the data
+            content_length = int(self.headers['Content-Length'])
+
+            # Read the data sent in the POST request
+            post_data = self.rfile.read(content_length)
+
+            # Convert the data from JSON to a Python dictionary
+            data = json.loads(post_data.decode('utf-8'))
+
+            # Extract the two values from the data
+            azimuth = data.get('azimuth')
+            elevation = data.get('elevation')
+            logger.info(f"Received new position: {azimuth}, {elevation}")
+            self.redirectHome()
 
     def redirectHome(self, permanently=False):
         if permanently:
