@@ -37,7 +37,7 @@ class Dish:
             direction, step, GPIO_pins, "DRV8825")
 
         # call the function, pass the arguments
-        motor.motor_go(False, "Full", 100, .01, True, .05)
+        motor.motor_go(False, "Full", 10000, .001, True, .05)
 
     def manualDrive():
         GPIO.setmode(GPIO.BCM)
