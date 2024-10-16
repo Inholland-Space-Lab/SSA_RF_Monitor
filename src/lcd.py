@@ -19,7 +19,7 @@ class LCD():
 
             i2c = board.I2C()
 
-            LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16)
+            LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16, 0x30)
             # LCD.lcd = i2c_lcd.lcd(addr=0x3E)
             LCD.write("Started At:")
         except Exception as e:
