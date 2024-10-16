@@ -30,7 +30,7 @@ class LCD():
         ip = str(os.popen('hostname -I').read())
         logger.debug(ip)
 
-        LCD.lcd.setCursor(0, 1)
+        LCD.lcd.setCursor(1, 0)
         LCD.lcd.write(str(ip))
 
     @staticmethod
