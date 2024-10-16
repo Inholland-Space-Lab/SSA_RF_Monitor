@@ -1,5 +1,7 @@
 import logging
+import time
 from config import Config
+from RPi import GPIO
 from stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, ExponentialAcceleration, LinearAcceleration
 from stepper_motors_juanmf1.Controller import DRV8825MotorDriver
 from stepper_motors_juanmf1.Navigation import DynamicNavigation
@@ -33,12 +35,23 @@ class Dish:
         # start running the belt
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
-        motor1: DRV8825MotorDriver = Dish.setupDriver(
-            directionGpioPin=4, stepGpioPin=27, enableGpioPin=22)  # 22
 
-        logger.info(motor1.getCurrentPosition())
-        motor1.stepClockWise(200)
-        logger.info(motor1.getCurrentPosition())
+        GPIO.setmode(GPIO.BCM)
+        step_pin = 27
+        steps = 200
+        step_delay = 4
+        GPIO.setup(step_pin, GPIO.OUT)
+        for i in range(steps):
+            time.sleep(step_delay/1000)
+            GPIO.output(23, GPIO.HIGH)
+            time.sleep(step_delay/1000)
+            GPIO.output(24, GPIO.LOW)
+        # motor1: DRV8825MotorDriver = Dish.setupDriver(
+        #     directionGpioPin=4, stepGpioPin=27, enableGpioPin=22)  # 22
+
+        # logger.info(motor1.getCurrentPosition())
+        # motor1.stepClockWise(200)
+        # logger.info(motor1.getCurrentPosition())
         # for motor in Belt.motors:
         #     speed = Config.getBeltSpeed()
         #     direction = Config.getBeltDirection()
