@@ -30,7 +30,7 @@ class Dish:
     def customLibDrive():
         motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
 
-        motor.do_steps(Direction.clockwise, 10000, 1)
+        motor.do_steps_sync(Direction.clockwise, 10000, 1)
         motor.do_steps_sync(Direction.counter_clockwise, 10000, 1)
 
     def positionListener(currentPos, targetPos, dir):

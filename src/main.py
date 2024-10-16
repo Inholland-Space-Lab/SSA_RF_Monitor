@@ -26,6 +26,7 @@ logging.basicConfig(handlers=[logging.FileHandler("logs/latest.log"),
 def sigterm_handler(_signo, _stack_frame):
     # Gracefully stop the server when the program exits or crashes
     logger.info("stopping...")
+    Dish.stop()
     GPIO.cleanup()
     Server.stop()
     LCD.write("Stopped: " + str(_signo))
