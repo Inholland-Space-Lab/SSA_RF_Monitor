@@ -28,8 +28,8 @@ class Dish:
 
     def motorlibDrive():
         # define GPIO pins
-        GPIO_pins = (14, 15, 18)  # Microstep Resolution MS1-MS3 -> GPIO Pin
-        direction = 244       # Direction -> GPIO Pin
+        GPIO_pins = (-1, -1, -1)  # Microstep Resolution MS1-MS3 -> GPIO Pin
+        direction = 4       # Direction -> GPIO Pin
         step = 27      # Step -> GPIO Pin
 
         # Declare a instance of class pass GPIO pins numbers and the motor type
@@ -37,7 +37,7 @@ class Dish:
             direction, step, GPIO_pins, "DRV8825")
 
         # call the function, pass the arguments
-        motor.motor_go(False, "Full", 100, .01, False, .05)
+        motor.motor_go(False, "Full", 100, .01, True, .05)
 
     def manualDrive():
         GPIO.setmode(GPIO.BCM)
