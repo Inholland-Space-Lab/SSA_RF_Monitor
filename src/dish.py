@@ -42,7 +42,7 @@ class Dish:
     def set_target(azimuth, elevation):
         logger.info(f"Setting target: {azimuth}, {elevation}")
 
-        steps_per_rev = 1024 * 19 * 4
+        steps_per_rev = 360 / 1.8 * (19+(38/187))
         target_azimuth = azimuth / 360 * steps_per_rev
         current_azimuth = Dish.azimuth_motor.position
         azimuth_steps = current_azimuth - target_azimuth
