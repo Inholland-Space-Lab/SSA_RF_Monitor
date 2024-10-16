@@ -11,15 +11,12 @@ python -m venv --system-site-packages ./.venv
 
 # Install python packages into the venv
 ./.venv/bin/pip install numpy --upgrade
-./.venv/bin/pip uninstall RPi.GPIO              # gpio pins
-./.venv/bin/pip uninstall gpiozero              # gpio pins
-./.venv/bin/pip install rpi-lgpio     # gpio pins
-./.venv/bin/pip install Mock.GPIO
-./.venv/bin/pip install smbus
+./.venv/bin/pip install rpi-lgpio               # gpio pins
+./.venv/bin/pip install Mock.GPIO               # gpio pins on pc
+./.venv/bin/pip install smbus                   # i2c
 ./.venv/bin/pip install adafruit-circuitpython-bno055 #bno055 library
 ./.venv/bin/pip install multiprocess
 ./.venv/bin/pip uninstall rpimotorlib             # Stepper motors
-./.venv/bin/pip install i2c_lcd
 
 # List installed packages
 ./.venv/bin/pip list
