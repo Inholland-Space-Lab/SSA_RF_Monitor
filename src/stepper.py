@@ -89,10 +89,10 @@ class Stepper():
 
         if steps > 0:
             self.do_steps_sync(
-                Direction.counter_clockwise, steps, 1)
+                Direction.counter_clockwise, steps, 0.1)
         else:
             self.do_steps_sync(
-                Direction.clockwise, -steps, 1)
+                Direction.clockwise, -steps, 0.1)
 
     def do_steps_sync(self, *args):
         self.job_queue.put(args)
