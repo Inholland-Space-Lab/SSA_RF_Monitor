@@ -39,6 +39,10 @@ if __name__ == "__main__":
     # Start the server and add the camera(s)
     logger.info("starting")
     try:
+        GPIO.setmode(23, GPIO.OUT)
+        GPIO.output(23, GPIO.HIGH)
+        GPIO.setmode(24, GPIO.OUT)
+        GPIO.output(24, GPIO.LOW)
         Config.start()
         LCD.start()
         Dish.start()

@@ -11,7 +11,7 @@ class LCD():
     lcd: I2cLcd
 
     def start():
-        logger.debug("Starting")
+        logger.info("Starting LCD")
 
         try:
 

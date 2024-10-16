@@ -34,7 +34,7 @@ class Dish:
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
         motor1: DRV8825MotorDriver = Dish.setupDriver(
-            directionGpioPin=17, stepGpioPin=27, enableGpioPin=22)  # 22
+            directionGpioPin=4, stepGpioPin=27, enableGpioPin=22)  # 22
 
         logger.info(motor1.getCurrentPosition())
         motor1.stepClockWise(200)
