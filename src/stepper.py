@@ -24,6 +24,7 @@ class Stepper():
     step_pin: int
     dir_pin: int
     enable_pin: int
+    position: int
 
     def __init__(self, step_pin, dir_pin, enable_pin):
         # Define Pins
@@ -60,6 +61,10 @@ class Stepper():
         self.job_queue.put(args)
 
     def do_steps(self, direction, step_count, delay_ms):
+        if direction:
+            self.position += step_count
+        else:
+            self.position -= step_count
         logger.debug(f"doing {step_count} steps. Direction {direction}")
         GPIO.output(self.enable_pin, GPIO.HIGH)
         GPIO.output(self.dir_pin, direction)

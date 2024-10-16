@@ -4,6 +4,7 @@ import os
 import socketserver
 from http import server
 from config import Config
+from dish import Dish
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +90,7 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             azimuth = data.get('azimuth')
             elevation = data.get('elevation')
             logger.info(f"Received new position: {azimuth}, {elevation}")
+            Dish.set_target(azimuth, elevation)
             self.redirectHome()
 
     def redirectHome(self, permanently=False):

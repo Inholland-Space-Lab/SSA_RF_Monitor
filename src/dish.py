@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 class Dish:
     # The belt contains two motors with different pins
     # motors = list()
+    azimuth_motor: Stepper
 
     # def configure():
     #     # create each of the motors and set their microstep config
@@ -20,22 +21,43 @@ class Dish:
     #     for motor in Belt.motors:
     #         motor.SetMicroStep('hardward', '1/4step')
 
+    @staticmethod
     def start():
         # start running the belt
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
+
+        Dish.azimuth_motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
+
         # Dish.manualDrive()
-        Dish.customLibDrive()
+        Dish.motorHome()
 
-    def customLibDrive():
-        motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
+    @staticmethod
+    def motorHome():
 
-        motor.do_steps_sync(Direction.clockwise, 10000, 1)
-        motor.do_steps_sync(Direction.counter_clockwise, 10000, 1)
+        Dish.azimuth_motor.do_steps_sync(Direction.clockwise, 5000, 1)
+        Dish.azimuth_motor.do_steps_sync(Direction.counter_clockwise, 5000, 1)
 
+    @staticmethod
+    def set_target(azimuth, elevation):
+        logger.info(f"Setting target: {azimuth}, {elevation}")
+
+        steps_per_rev = 1024 * 19 * 4
+        target_azimuth = azimuth / 360 * steps_per_rev
+        current_azimuth = Dish.azimuth_motor.position
+        azimuth_steps = current_azimuth - target_azimuth
+
+        logger.debug(f"Current Position {current_azimuth}\n"
+                     f"Target Position {target_azimuth}\n"
+                     f"Taking {azimuth_steps} steps")
+
+        Dish.azimuth_motor.do_steps_sync(Direction.clockwise, azimuth_steps, 1)
+
+    @staticmethod
     def positionListener(currentPos, targetPos, dir):
         logger.info(currentPos)
 
+    @staticmethod
     def stop():
         # stop each of the motors
         logger.info('stopping motors')
