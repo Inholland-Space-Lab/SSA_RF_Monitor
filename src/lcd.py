@@ -1,5 +1,7 @@
 import os
+import time
 import board
+from lib.grove import JHD1802
 from lib.pyb_i2c_grove_rgb_lcd import I2cLcd
 # import i2c_lcd
 import logging
@@ -17,11 +19,21 @@ class LCD():
 
         try:
 
-            i2c = board.I2C()
+            # i2c = board.I2C()
 
-            LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16, 0x30)
-            # LCD.lcd = i2c_lcd.lcd(addr=0x3E)
-            LCD.write("Started At:")
+            # LCD.lcd = I2cLcd(i2c, 0x3E, 2, 16, 0x30)
+            # # LCD.lcd = i2c_lcd.lcd(addr=0x3E)
+            # LCD.write("Started At:")
+
+            lcd = JHD1802()
+            rows, cols = lcd.size()
+
+            lcd.backlight(False)
+            time.sleep(1)
+
+            lcd.backlight(True)
+            lcd.setCursor(0, 0)
+            lcd.write("hello world!")
         except Exception as e:
             logger.warning("Failed to Start LCD: " + str(e))
 
