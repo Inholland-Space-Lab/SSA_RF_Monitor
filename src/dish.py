@@ -56,7 +56,7 @@ class Dish:
                 Direction.counter_clockwise, int(azimuth_steps), 1)
         else:
             Dish.azimuth_motor.do_steps_sync(
-                Direction.clockwise, int(azimuth_steps), 1)
+                Direction.clockwise, - int(azimuth_steps), 1)
 
     @staticmethod
     def positionListener(currentPos, targetPos, dir):
