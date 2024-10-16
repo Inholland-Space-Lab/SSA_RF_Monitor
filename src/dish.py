@@ -38,14 +38,14 @@ class Dish:
 
         GPIO.setmode(GPIO.BCM)
         step_pin = 27
-        steps = 200
+        steps = 1000
         step_delay = 4
         GPIO.setup(step_pin, GPIO.OUT)
         for i in range(steps):
             time.sleep(step_delay/1000)
-            GPIO.output(23, GPIO.HIGH)
+            GPIO.output(step_pin, GPIO.HIGH)
             time.sleep(step_delay/1000)
-            GPIO.output(24, GPIO.LOW)
+            GPIO.output(step_pin, GPIO.LOW)
         # motor1: DRV8825MotorDriver = Dish.setupDriver(
         #     directionGpioPin=4, stepGpioPin=27, enableGpioPin=22)  # 22
 
