@@ -35,8 +35,8 @@ class Dish:
     @staticmethod
     def motorHome():
 
-        Dish.azimuth_motor.do_steps_sync(Direction.clockwise, 5000, 1)
-        Dish.azimuth_motor.do_steps_sync(Direction.counter_clockwise, 5000, 1)
+        Dish.azimuth_motor.do_steps_sync(Direction.clockwise, 1000, 1)
+        Dish.azimuth_motor.do_steps_sync(Direction.counter_clockwise, 1000, 1)
 
     @staticmethod
     def set_target(azimuth, elevation):
@@ -51,8 +51,12 @@ class Dish:
                      f"Target Position {target_azimuth}\n"
                      f"Taking {azimuth_steps} steps")
 
-        Dish.azimuth_motor.do_steps_sync(
-            Direction.clockwise, int(azimuth_steps), 1)
+        if azimuth_steps > 0:
+            Dish.azimuth_motor.do_steps_sync(
+                Direction.counter_clockwise, int(azimuth_steps), 1)
+        else:
+            Dish.azimuth_motor.do_steps_sync(
+                Direction.clockwise, int(azimuth_steps), 1)
 
     @staticmethod
     def positionListener(currentPos, targetPos, dir):
