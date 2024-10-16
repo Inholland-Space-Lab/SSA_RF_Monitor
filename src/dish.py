@@ -38,8 +38,8 @@ class Dish:
 
         GPIO.setmode(GPIO.BCM)
         step_pin = 27
-        steps = 1000
-        step_delay = 4
+        steps = 10000
+        step_delay = 1
         GPIO.setup(step_pin, GPIO.OUT)
         for i in range(steps):
             time.sleep(step_delay/1000)
