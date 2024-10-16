@@ -2,10 +2,8 @@ import logging
 import time
 from config import Config
 from RPi import GPIO
-from stepper_motors_juanmf1.AccelerationStrategy import DynamicDelayPlanner, ExponentialAcceleration, LinearAcceleration
-from stepper_motors_juanmf1.Controller import DRV8825MotorDriver
-from stepper_motors_juanmf1.Navigation import DynamicNavigation
-from stepper_motors_juanmf1.StepperMotor import GenericStepper
+from RpiMotorLib import RpiMotorLib
+
 
 logger = logging.getLogger(__name__)
 
@@ -21,21 +19,27 @@ class Dish:
     #     for motor in Belt.motors:
     #         motor.SetMicroStep('hardward', '1/4step')
 
-    @staticmethod
-    def setupDriver(*, directionGpioPin, stepGpioPin, enableGpioPin) -> DRV8825MotorDriver:
-        stepperMotor = GenericStepper(
-            maxPps=2000, minPps=150, maxSleepTime=1/2000, minSleepTime=1/150)
-        delayPlanner = DynamicDelayPlanner()
-        navigation = DynamicNavigation()
-
-        acceleration = ExponentialAcceleration(stepperMotor, delayPlanner, 1)
-        return DRV8825MotorDriver(stepperMotor=stepperMotor, accelerationStrategy=acceleration, directionGpioPin=directionGpioPin, stepGpioPin=stepGpioPin, enableGpioPin=enableGpioPin, navigation=navigation)
-
     def start():
         # start running the belt
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
+        # Dish.manualDrive()
+        Dish.motorlibDrive()
 
+    def motorlibDrive():
+        # define GPIO pins
+        GPIO_pins = (14, 15, 18)  # Microstep Resolution MS1-MS3 -> GPIO Pin
+        direction = 244       # Direction -> GPIO Pin
+        step = 27      # Step -> GPIO Pin
+
+        # Declare a instance of class pass GPIO pins numbers and the motor type
+        motor = RpiMotorLib.A4988Nema(
+            direction, step, GPIO_pins, "DRV8825")
+
+        # call the function, pass the arguments
+        motor.motor_go(False, "Full", 100, .01, False, .05)
+
+    def manualDrive():
         GPIO.setmode(GPIO.BCM)
         step_pin = 27
         steps = 10000
@@ -46,16 +50,6 @@ class Dish:
             GPIO.output(step_pin, GPIO.HIGH)
             time.sleep(step_delay/1000)
             GPIO.output(step_pin, GPIO.LOW)
-        # motor1: DRV8825MotorDriver = Dish.setupDriver(
-        #     directionGpioPin=4, stepGpioPin=27, enableGpioPin=22)  # 22
-
-        # logger.info(motor1.getCurrentPosition())
-        # motor1.stepClockWise(200)
-        # logger.info(motor1.getCurrentPosition())
-        # for motor in Belt.motors:
-        #     speed = Config.getBeltSpeed()
-        #     direction = Config.getBeltDirection()
-        #     motor.TurnStep(Dir=direction, steps=0, stepdelay=1/speed)
 
     def positionListener(currentPos, targetPos, dir):
         logger.info(currentPos)
