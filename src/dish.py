@@ -31,32 +31,7 @@ class Dish:
         motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
 
         motor.do_steps(Direction.clockwise, 10000, 1)
-        motor.do_steps(Direction.counter_clockwise, 10000, 1)
-
-    def motorlibDrive():
-        # define GPIO pins
-        GPIO_pins = (-1, -1, -1)  # Microstep Resolution MS1-MS3 -> GPIO Pin
-        direction = 4       # Direction -> GPIO Pin
-        step = 27      # Step -> GPIO Pin
-
-        # Declare a instance of class pass GPIO pins numbers and the motor type
-        motor = RpiMotorLib.A4988Nema(
-            direction, step, GPIO_pins, "DRV8825")
-
-        # call the function, pass the arguments
-        motor.motor_go(False, "Full", 10000, .001, True, .05)
-
-    def manualDrive():
-        GPIO.setmode(GPIO.BCM)
-        step_pin = 27
-        steps = 10000
-        step_delay = 1
-        GPIO.setup(step_pin, GPIO.OUT)
-        for i in range(steps):
-            time.sleep(step_delay/1000)
-            GPIO.output(step_pin, GPIO.HIGH)
-            time.sleep(step_delay/1000)
-            GPIO.output(step_pin, GPIO.LOW)
+        motor.do_steps_sync(Direction.counter_clockwise, 10000, 1)
 
     def positionListener(currentPos, targetPos, dir):
         logger.info(currentPos)
