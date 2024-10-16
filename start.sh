@@ -17,7 +17,7 @@ python -m venv --system-site-packages ./.venv
 ./.venv/bin/pip install Mock.GPIO
 ./.venv/bin/pip install adafruit-circuitpython-bno055 #bno055 library
 ./.venv/bin/pip install multiprocess
-./.venv/bin/pip install rpimotorlib             # Stepper motors
+./.venv/bin/pip uninstall rpimotorlib             # Stepper motors
 ./.venv/bin/pip uninstall -i https://test.pypi.org/simple/ stepper-motors-juanmf1
 
 # List installed packages

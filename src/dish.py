@@ -4,6 +4,8 @@ from config import Config
 from RPi import GPIO
 from RpiMotorLib import RpiMotorLib
 
+from stepper import Direction, Stepper
+
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +26,13 @@ class Dish:
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
         # Dish.manualDrive()
-        Dish.motorlibDrive()
+        Dish.customLibDrive()
+
+    def customLibDrive():
+        motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
+
+        motor.do_steps(Direction.clockwise, 10000, 1)
+        motor.do_steps(Direction.counter_clockwise, 10000, 1)
 
     def motorlibDrive():
         # define GPIO pins
