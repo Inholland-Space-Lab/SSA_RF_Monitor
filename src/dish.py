@@ -51,7 +51,8 @@ class Dish:
                      f"Target Position {target_azimuth}\n"
                      f"Taking {azimuth_steps} steps")
 
-        Dish.azimuth_motor.do_steps_sync(Direction.clockwise, azimuth_steps, 1)
+        Dish.azimuth_motor.do_steps_sync(
+            Direction.clockwise, int(azimuth_steps), 1)
 
     @staticmethod
     def positionListener(currentPos, targetPos, dir):
