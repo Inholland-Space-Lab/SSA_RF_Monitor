@@ -29,7 +29,7 @@ class Dish:
         logger.info("starting dish")
 
         Dish.azimuth_motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
-        Dish.elevation_motor = Stepper(step_pin=18, dir_pin=24, enable_pin=23)
+        Dish.elevation_motor = Stepper(step_pin=24, dir_pin=18, enable_pin=23)
 
     @staticmethod
     def set_target(azimuth, elevation):
