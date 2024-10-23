@@ -64,7 +64,7 @@ class Stepper():
             args = self.job_queue.get()  # Get the next job
             if args is None:  # Stop signal
                 break
-            self.do_steps(*args)
+            self.do_steps_exp(*args)
             self.job_queue.task_done()  # Signal that the job is done
 
     def home(self):
@@ -131,12 +131,16 @@ class Stepper():
         if not total_time:
             total_time = step_count / 10000
 
-        def delay(step):
-            if step > step_count/2:
-                step = step_count - step
-            return (total_time / step_count / 4) - (4*total_time / step_count / step_count * step)
+        avg_delay = total_time/step_count
 
-        logger.debug(f"total delay: {delay(step_count/4) * step_count}")
+        def delay(step):
+            a = 2/step_count
+            if step < step_count/2:
+                return -(a * step) + (1.5 * avg_delay)
+            else:
+                return (a*step) - (0.5 * avg_delay)
+
+        logger.debug(f"average delay: {avg_delay}")
         starting_time = time.time()
 
         for i in range(step_count):
