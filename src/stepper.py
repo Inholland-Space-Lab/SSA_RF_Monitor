@@ -135,12 +135,15 @@ class Stepper():
             if step > step_count/2:
                 step = step_count - step
             return (4*total_time/step_count * step)
+
         logger.debug(f"total delay: {delay(step_count/4)}")
         starting_time = time.time()
+
         for i in range(step_count):
             logger.debug(f"delay {str(delay(i))}")
-            total_time.sleep(delay(i))
+            time.sleep(delay(i))
             GPIO.output(self.step_pin, GPIO.HIGH)
-            total_time.sleep(delay(i))
+            time.sleep(delay(i))
             GPIO.output(self.step_pin, GPIO.LOW)
+
         logger.debug(f"took {time.time() - starting_time} seconds")
