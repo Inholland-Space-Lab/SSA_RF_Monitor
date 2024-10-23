@@ -132,13 +132,14 @@ class Stepper():
             total_time = step_count / 10000
 
         avg_delay = total_time/step_count
+        a = 2/step_count
 
         def delay(step):
-            a = 2/step_count
+            x = step * avg_delay
             if step < step_count/2:
-                return -(a * step) + (1.5 * avg_delay)
+                return -(a * x) + (1.5 * avg_delay)
             else:
-                return (a*step) - (0.5 * avg_delay)
+                return (a*x) - (0.5 * avg_delay)
 
         logger.debug(f"average delay: {avg_delay}")
         starting_time = time.time()
