@@ -207,21 +207,22 @@ class ControlledStepper(Stepper):
 
     def controller(self):
         # PID
-        P = 0.1
-        I = 0
-        D = 0.9
+        p = 0.1
+        i = 0
+        d = 0.9
 
         pid = 0
 
         # P
-        pid += P * self.distance
+        pid += p * self.distance
 
         # I
-        pid += I * self.distance_sum
+        pid += i * self.distance_sum
         self.distance_sum += self.distance
 
         # D
-        pid += D * self.velocity
+        pid += d * self.velocity
+        logger.debug(f"pid: {pid}")
 
         target_velocity = max(self.max_velocity, min(-self.max_velocity, pid))
 
