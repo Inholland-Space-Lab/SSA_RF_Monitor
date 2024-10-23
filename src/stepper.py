@@ -143,11 +143,12 @@ class Stepper():
             else:
                 return (a*x) - (0.5 * avg_delay)
 
-        logger.debug(f"average delay: {avg_delay}")
+        logger.debug(f"average delay: {avg_delay}"
+                     f"from {delay(0)} to {delay(step_count/2)}")
         starting_time = time.time()
 
         for i in range(step_count):
-            logger.debug(f"delay {str(delay(i))}")
+            # logger.debug(f"delay {str(delay(i))}")
             time.sleep(delay(i))
             GPIO.output(self.step_pin, GPIO.HIGH)
             time.sleep(delay(i))
