@@ -184,7 +184,7 @@ class ControlledStepper(Stepper):
 
     @property
     def distance(self) -> int:
-        self.goal - self.position
+        return self.goal - self.position
 
     def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1000):
         super().__init__(step_pin, dir_pin, enable_pin)
