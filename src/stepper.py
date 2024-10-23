@@ -208,7 +208,7 @@ class ControlledStepper(Stepper):
 
     def controller(self):
         # PID
-        p = 0.1
+        p = 0.001
         i = 0
         d = 0.9
 
