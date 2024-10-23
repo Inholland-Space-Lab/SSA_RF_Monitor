@@ -183,7 +183,7 @@ class ControlledStepper(Stepper):
     distance_sum: float
 
     @property
-    def distance(self):
+    def distance(self) -> int:
         self.goal - self.position
 
     def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1000):
@@ -212,6 +212,9 @@ class ControlledStepper(Stepper):
         d = 0.9
 
         pid = 0
+
+        logger.debug("controller")
+        logger.debug(f"distance: {self.distance}")
 
         # P
         pid += p * self.distance
