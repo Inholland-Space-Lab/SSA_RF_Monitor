@@ -118,29 +118,29 @@ class Stepper():
             time.sleep(delay_s)
             GPIO.output(self.step_pin, GPIO.LOW)
 
-    def do_steps_exp(self, direction, step_count, time=None):
+    def do_steps_exp(self, direction, step_count, total_time=None):
         if direction:
             self.position += step_count
         else:
             self.position -= step_count
         logger.debug(
-            f"doing {step_count} steps in {time} seconds. Direction {direction}")
+            f"doing {step_count} steps in {total_time} seconds. Direction {direction}")
         GPIO.output(self.enable_pin, GPIO.HIGH)
         GPIO.output(self.dir_pin, direction)
 
-        if not time:
-            time = step_count / 10000
+        if not total_time:
+            total_time = step_count / 10000
 
         def delay(step):
             if step > step_count/2:
                 step = step_count - step
-            return 1 / (4*time/step_count * step)
+            return 1 / (4*total_time/step_count * step)
         logger.debug(f"total delay: {delay(step_count/4)}")
         starting_time = time.time()
         for i in range(step_count):
             logger.debug(f"delay {str(delay(i))}")
-            time.sleep(delay(i))
+            total_time.sleep(delay(i))
             GPIO.output(self.step_pin, GPIO.HIGH)
-            time.sleep(delay(i))
+            total_time.sleep(delay(i))
             GPIO.output(self.step_pin, GPIO.LOW)
         logger.debug(f"took {time.time() - starting_time} seconds")
