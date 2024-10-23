@@ -94,7 +94,7 @@ class Stepper():
 
         if steps > 0:
             self.do_steps_sync(
-                Direction.counter_clockwise, steps)
+                Direction.counter_clockwise, steps, 2)
         else:
             self.do_steps_sync(
                 Direction.clockwise, -steps)
