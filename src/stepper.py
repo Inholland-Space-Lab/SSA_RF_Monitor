@@ -187,7 +187,7 @@ class ControlledStepper(Stepper):
         self.goal - self.position
 
     def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1000):
-        super().__init__(step_pin, dir_pin, enable_pin, resolution, gear_ratio)
+        super().__init__(step_pin, dir_pin, enable_pin)
         # self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
         self.velocity = 0
