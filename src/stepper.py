@@ -215,7 +215,11 @@ class ControlledStepper(Stepper):
         pid = 0
 
         # logger.debug("controller")
-        # logger.debug(f"distance: {self.distance}")
+        logger.debug(
+            f"position: {self.position}"
+            f"goal: {self.goal}"
+            f"distance: {self.distance}"
+        )
 
         # P
         pid += p * self.distance
