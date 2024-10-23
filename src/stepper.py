@@ -226,7 +226,7 @@ class ControlledStepper(Stepper):
 
         # D
         pid += d * self.velocity
-        # logger.debug(f"pid: {pid}")
+        logger.debug(f"pid: {pid}")
 
         target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
 
@@ -239,7 +239,7 @@ class ControlledStepper(Stepper):
         self.velocity = self.controller()
         step_delay = self.step_length
         if not (self.velocity == 0):
-            step_delay = 1 / self.velocity
+            step_delay = abs(1 / self.velocity)
 
         steps = math.floor(self.velocity * self.step_length)
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
