@@ -119,6 +119,8 @@ class Stepper():
             GPIO.output(self.step_pin, GPIO.LOW)
 
     def do_steps_exp(self, direction, step_count, total_time=None):
+        if step_count == 0:
+            return
         if direction:
             self.position += step_count
         else:
