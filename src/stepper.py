@@ -193,6 +193,7 @@ class ControlledStepper(Stepper):
         self.velocity = 0
         self.goal = 0
         self.distance_sum = 0
+        logger.debug("init succesful")
         self.calc_steps()
 
     def move_to_sync(self, degrees=None, radians=None):
@@ -230,6 +231,7 @@ class ControlledStepper(Stepper):
         return target_velocity
 
     def calc_steps(self):
+        logger.debug("calc steps")
         self.velocity = self.controller()
         step_delay = self.step_length
         if not self.velocity == 0:
