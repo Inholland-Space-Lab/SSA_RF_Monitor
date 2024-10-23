@@ -3,7 +3,7 @@ import time
 from config import Config
 from RPi import GPIO
 
-from stepper import Direction, Stepper
+from stepper import ControlledStepper, Direction, Stepper
 
 
 logger = logging.getLogger(__name__)
@@ -28,8 +28,10 @@ class Dish:
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
 
-        Dish.azimuth_motor = Stepper(step_pin=27, dir_pin=4, enable_pin=22)
-        Dish.elevation_motor = Stepper(step_pin=24, dir_pin=18, enable_pin=23)
+        Dish.azimuth_motor = ControlledStepper(
+            step_pin=27, dir_pin=4, enable_pin=22)
+        Dish.elevation_motor = ControlledStepper(
+            step_pin=24, dir_pin=18, enable_pin=23)
 
     @staticmethod
     def set_target(azimuth, elevation):

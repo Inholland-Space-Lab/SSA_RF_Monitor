@@ -64,7 +64,7 @@ class Stepper():
             args = self.job_queue.get()  # Get the next job
             if args is None:  # Stop signal
                 break
-            self.do_steps_exp(*args)
+            self.do_steps(*args)
             self.job_queue.task_done()  # Signal that the job is done
 
     def home(self):
@@ -92,24 +92,33 @@ class Stepper():
                      f"Target Position {target_position}\n"
                      f"Taking {steps} steps")
 
-        if steps > 0:
-            self.do_steps_sync(
-                Direction.counter_clockwise, steps, 2)
-        else:
-            self.do_steps_sync(
-                Direction.clockwise, -steps)
+        self.do_steps_sync(steps, 2)
+        # if steps > 0:
+        #     self.do_steps_sync(
+        #         Direction.counter_clockwise, steps, 2)
+        # else:
+        #     self.do_steps_sync(
+        #         Direction.clockwise, -steps, 2)
 
     def do_steps_sync(self, *args):
         self.job_queue.put(args)
 
-    def do_steps(self, direction, step_count, delay_ms=0.1):
-        if direction:
+    def do_steps(self, step_count, delay_ms=0.1):
+        # direction
+
+        # if direction:
+        #     self.position += step_count
+        # else:
+        #     self.position -= step_count
+        logger.debug(f"doing {step_count} steps")
+        GPIO.output(self.enable_pin, GPIO.HIGH)
+        if step_count > 0:
             self.position += step_count
+            GPIO.output(self.dir_pin, GPIO.LOW)
         else:
             self.position -= step_count
-        logger.debug(f"doing {step_count} steps. Direction {direction}")
-        GPIO.output(self.enable_pin, GPIO.HIGH)
-        GPIO.output(self.dir_pin, direction)
+            GPIO.output(self.dir_pin, GPIO.HIGH)
+
         delay_s = delay_ms/1000
 
         for i in range(step_count):
@@ -118,20 +127,28 @@ class Stepper():
             time.sleep(delay_s)
             GPIO.output(self.step_pin, GPIO.LOW)
 
-    def do_steps_exp(self, direction, step_count, total_time=None):
+    def do_steps_exp(self, step_count, total_time=None):
         if step_count == 0:
             return
-        if direction:
+        # if direction:
+        #     self.position += step_count
+        # else:
+        #     self.position -= step_count
+        GPIO.output(self.enable_pin, GPIO.HIGH)
+        # GPIO.output(self.dir_pin, direction)
+
+        if step_count > 0:
             self.position += step_count
+            GPIO.output(self.dir_pin, GPIO.LOW)
         else:
             self.position -= step_count
-        logger.debug(
-            f"doing {step_count} steps in {total_time} seconds. Direction {direction}")
-        GPIO.output(self.enable_pin, GPIO.HIGH)
-        GPIO.output(self.dir_pin, direction)
+            GPIO.output(self.dir_pin, GPIO.HIGH)
 
         if not total_time:
             total_time = step_count / 10000
+
+        logger.debug(
+            f"doing {step_count} steps in {total_time} seconds")
 
         avg_delay = total_time/step_count
         a = 2/step_count
@@ -155,3 +172,63 @@ class Stepper():
             GPIO.output(self.step_pin, GPIO.LOW)
 
         logger.debug(f"took {time.time() - starting_time} seconds")
+
+
+class ControlledStepper(Stepper):
+    step_length = 0.001
+    max_acceleration: float
+    max_velocity: float
+    velocity: float
+    goal: int
+    distance_sum: float
+
+    @property
+    def distance(self):
+        self.goal - self.position
+
+    def __init__(self, step_pin, dir_pin, enable_pin, resolution, gear_ratio, max_speed=1000):
+        super().__init__(step_pin, dir_pin, enable_pin, resolution, gear_ratio)
+        # self.max_acceleration = max_acceleration
+        self.max_velocity = max_speed
+        self.velocity = 0
+        self.goal = 0
+        self.distance_sum = 0
+        self.calc_steps()
+
+    def controller(self):
+        # PID
+        P = 0.1
+        I = 0
+        D = 0.9
+
+        pid = 0
+
+        # P
+        pid += P * self.distance
+
+        # I
+        pid += I * self.distance_sum
+        self.distance_sum += self.distance
+
+        # D
+        pid += D * self.velocity
+
+        target_velocity = max(self.max_velocity, min(-self.max_velocity, pid))
+
+        logger.debug(
+            f"Velocity: {target_velocity}"
+            f"Acceleration: {abs(self.velocity - target_velocity)}")
+        return target_velocity
+
+    def calc_steps(self):
+        self.velocity = self.controller()
+        step_delay = self.step_length
+        if not self.velocity == 0:
+            step_delay = 1 / self.velocity
+
+        steps = math.floor(self.velocity * self.step_length)
+        self.do_steps_sync(dir, steps, step_delay)
+
+        timer = threading.Timer(self.step_length, self.calc_steps)
+        timer.daemon = True
+        timer.start()
