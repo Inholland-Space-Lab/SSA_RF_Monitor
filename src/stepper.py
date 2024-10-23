@@ -64,7 +64,7 @@ class Stepper():
             args = self.job_queue.get()  # Get the next job
             if args is None:  # Stop signal
                 break
-            self.do_steps_exp(*args)
+            self.do_steps(*args)
             self.job_queue.task_done()  # Signal that the job is done
 
     def home(self):
