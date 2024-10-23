@@ -134,9 +134,9 @@ class Stepper():
         def delay(step):
             if step > step_count/2:
                 step = step_count - step
-            return (total_time/4) - (4*total_time/step_count * step)
+            return (total_time / step_count / 4) - (4*total_time / step_count / step_count * step)
 
-        logger.debug(f"total delay: {delay(step_count/4)}")
+        logger.debug(f"total delay: {delay(step_count/4) * step_count}")
         starting_time = time.time()
 
         for i in range(step_count):
