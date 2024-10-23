@@ -187,7 +187,7 @@ class ControlledStepper(Stepper):
     def distance(self) -> int:
         return self.goal - self.position
 
-    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1000):
+    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1000000):
         super().__init__(step_pin, dir_pin, enable_pin)
         # self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
@@ -216,8 +216,8 @@ class ControlledStepper(Stepper):
 
         # logger.debug("controller")
         logger.debug(
-            f"position: {self.position}"
-            f"goal: {self.goal}"
+            f"position: {self.position}\n"
+            f"goal: {self.goal}\n"
             f"distance: {self.distance}"
         )
 
@@ -235,7 +235,7 @@ class ControlledStepper(Stepper):
         target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
 
         logger.debug(
-            f"Velocity: {target_velocity}"
+            f"Velocity: {target_velocity}\n"
             f"Acceleration: {abs(self.velocity - target_velocity)}")
         return target_velocity
 
