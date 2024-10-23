@@ -195,6 +195,15 @@ class ControlledStepper(Stepper):
         self.distance_sum = 0
         self.calc_steps()
 
+    def move_to_sync(self, degrees=None, radians=None):
+        target_rev = 0
+        if degrees:
+            target_rev = degrees / 360
+        elif radians:
+            target_rev = radians / (2*math.pi)
+
+        self.goal = target_rev * self.steps_per_rev
+
     def controller(self):
         # PID
         P = 0.1
