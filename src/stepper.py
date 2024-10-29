@@ -73,6 +73,10 @@ class Stepper():
                 break
             self.do_steps(*args)
             self.job_queue.task_done()  # Signal that the job is done
+            self.on_task_done()
+
+    def on_task_done(self):
+        pass
 
     def home(self):
         self.do_steps_sync(int(self.steps_per_rev / 4))
@@ -207,6 +211,9 @@ class ControlledStepper(Stepper):
         logger.debug("\n" * 8)
         self.calc_steps()
 
+    def home(self):
+        pass
+
     def move_to_sync(self, degrees=None, radians=None):
         target_rev = 0
         if degrees:
@@ -266,6 +273,9 @@ class ControlledStepper(Stepper):
             f"will take: {steps * step_delay}, out of: {ControlledStepper.step_length}")
         self.do_steps_sync(steps, step_delay)
 
-        timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
-        timer.daemon = True
-        timer.start()
+        # timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
+        # timer.daemon = True
+        # timer.start()
+
+    def on_task_done(self):
+        self.calc_steps()
