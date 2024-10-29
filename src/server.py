@@ -110,10 +110,10 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             data = json.loads(post_data.decode('utf-8'))
 
             # Extract the two values from the data
-            ControlledStepper.p = data.get('p')
-            ControlledStepper.i = data.get('i')
-            ControlledStepper.d = data.get('d')
-            ControlledStepper.step_length = data.get('time')
+            ControlledStepper.p = float(data.get('p'))
+            ControlledStepper.i = float(data.get('i'))
+            ControlledStepper.d = float(data.get('d'))
+            ControlledStepper.step_length = float(data.get('time'))
 
             logger.info(f"Received new pid: {ControlledStepper.p}, {ControlledStepper.i}, "
                         f"{ControlledStepper.d}, {ControlledStepper.time}")

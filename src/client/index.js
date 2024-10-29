@@ -47,10 +47,12 @@ function zeroDish() {
 }
 
 function updatePidValues() {
-  const p = document.getElementById('pid-p').value;
-  const i = document.getElementById('pid-i').value;
-  const d = document.getElementById('pid-d').value;
-  const time = document.getElementById('pid-time').value;
+  const p = document.getElementById('pid-p').value || 0;
+  const i = document.getElementById('pid-i').value || 0;
+  const d = document.getElementById('pid-d').value || 0;
+  const time = document.getElementById('pid-time').value || 0;
+// Placeholder: send azimuth and elevation data to server or backend
+  console.log(`Setting pid ${p}, ${i}, ${d}, ${time}`);
 
   fetch(`${window.location.origin}/api/set-pid`,
       {
@@ -58,10 +60,10 @@ function updatePidValues() {
           body: JSON
           .stringify
           ({
-            p: p || 0,
-            i: i || 0,
-            d: d || 0,
-            time: time || 0,
+            p: p ,
+            i: i,
+            d: d,
+            time: time,
           }),
           headers: {
             "Content-type": "application/json",
