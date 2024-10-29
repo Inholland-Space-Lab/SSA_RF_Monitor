@@ -45,3 +45,26 @@ function zeroDish() {
             },
           })
 }
+
+function updatePidValues() {
+  const p = document.getElementById('pid-p').value;
+  const i = document.getElementById('pid-i').value;
+  const d = document.getElementById('pid-d').value;
+  const t = document.getElementById('pid-time').value;
+
+  fetch(`${window.location.origin}/api/set-pid`,
+      {
+          method: "POST",
+          body: JSON
+          .stringify
+          ({
+            p: p || 0,
+            i: i || 0,
+            d: d || 0,
+            time: time || 0,
+          }),
+          headers: {
+            "Content-type": "application/json",
+          },
+        })
+}

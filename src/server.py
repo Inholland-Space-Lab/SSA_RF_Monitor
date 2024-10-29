@@ -5,6 +5,7 @@ import socketserver
 from http import server
 from config import Config
 from dish import Dish
+from stepper import ControlledStepper
 
 logger = logging.getLogger(__name__)
 
@@ -92,8 +93,30 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             logger.info(f"Received new position: {azimuth}, {elevation}")
             Dish.set_target(float(azimuth), float(elevation))
             self.redirectHome()
+
         elif self.path == "/api/zero":
             Dish.zero()
+            self.redirectHome()
+
+        elif self.path == "/api/set-pid":
+
+            # Get the length of the data
+            content_length = int(self.headers['Content-Length'])
+
+            # Read the data sent in the POST request
+            post_data = self.rfile.read(content_length)
+
+            # Convert the data from JSON to a Python dictionary
+            data = json.loads(post_data.decode('utf-8'))
+
+            # Extract the two values from the data
+            ControlledStepper.p = data.get('p')
+            ControlledStepper.i = data.get('i')
+            ControlledStepper.d = data.get('d')
+            ControlledStepper.step_length = data.get('time')
+
+            logger.info(f"Received new pid: {ControlledStepper.p}, {ControlledStepper.i}, {
+                        ControlledStepper.d}, {ControlledStepper.time}")
             self.redirectHome()
 
     def redirectHome(self, permanently=False):

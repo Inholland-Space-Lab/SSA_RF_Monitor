@@ -176,7 +176,12 @@ class Stepper():
 
 
 class ControlledStepper(Stepper):
+
     step_length = 0.001
+    p = 0.1
+    i = 0
+    d = 0.9
+
     max_acceleration: float
     max_velocity: float
     velocity: float
@@ -208,10 +213,6 @@ class ControlledStepper(Stepper):
 
     def controller(self):
         # PID
-        p = 0.1
-        i = 0
-        d = 0.9
-
         pid = 0
 
         # logger.debug("controller")
@@ -222,14 +223,14 @@ class ControlledStepper(Stepper):
         )
 
         # P
-        pid += p * self.distance
+        pid += ControlledStepper.p * self.distance
 
         # I
-        pid += i * self.distance_sum
+        pid += ControlledStepper.i * self.distance_sum
         self.distance_sum += self.distance
 
         # D
-        pid += d * self.velocity
+        pid += ControlledStepper.d * self.velocity
         logger.debug(f"pid: {pid}")
 
         target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
@@ -241,14 +242,15 @@ class ControlledStepper(Stepper):
 
     def calc_steps(self):
         self.velocity = self.controller()
-        step_delay = self.step_length
+        step_delay = ControlledStepper.step_length
         if not (self.velocity == 0):
-            step_delay = min(self.step_length, abs(1 / self.velocity))
+            step_delay = min(ControlledStepper.step_length,
+                             abs(1 / self.velocity))
 
-        steps = math.floor(self.velocity * self.step_length)
+        steps = math.floor(self.velocity * ControlledStepper.step_length)
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
         self.do_steps_sync(steps, step_delay)
 
-        timer = threading.Timer(self.step_length, self.calc_steps)
+        timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
         timer.daemon = True
         timer.start()
