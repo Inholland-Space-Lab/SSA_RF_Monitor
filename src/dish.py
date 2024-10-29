@@ -42,8 +42,8 @@ class Dish:
 
     @staticmethod
     def zero():
-        Dish.azimuth_motor.position = 0
-        Dish.elevation_motor.position = 0
+        Dish.azimuth_motor.zero()
+        Dish.elevation_motor.zero()
 
     @staticmethod
     def positionListener(currentPos, targetPos, dir):

@@ -78,6 +78,9 @@ class Stepper():
     def on_task_done(self):
         pass
 
+    def zero(self):
+        self.position = 0
+
     def home(self):
         self.do_steps_sync(int(self.steps_per_rev / 4))
         self.do_steps_sync(-int(self.steps_per_rev / 4))
@@ -193,6 +196,7 @@ class ControlledStepper(Stepper):
     max_acceleration: float
     max_velocity: float
     velocity: float
+    acceleration: float
     goal: int
     distance_sum: float
 
@@ -213,6 +217,11 @@ class ControlledStepper(Stepper):
 
     def home(self):
         pass
+
+    def zero(self):
+        super().zero()
+        self.velocity = 0
+        self.acceleration = 0
 
     def move_to_sync(self, degrees=None, radians=None):
         target_rev = 0
