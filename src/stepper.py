@@ -260,7 +260,7 @@ class ControlledStepper(Stepper):
             step_delay = min(ControlledStepper.step_length,
                              abs(1 / self.velocity))
 
-        steps = math.floor(self.velocity * ControlledStepper.step_length)
+        steps = int(self.velocity * ControlledStepper.step_length)
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
         logger.debug(
             f"will take: {steps * step_delay}, out of: {ControlledStepper.step_length}")
