@@ -224,9 +224,9 @@ class ControlledStepper(Stepper):
 
         # logger.debug("controller")
         logger.debug(
-            f"{line(6)}position: {self.position}\n"
-            f"{line(5)}goal: {self.goal}\n"
-            f"{line(4)}distance: {self.distance}"
+            f"{line(1)}position: {self.position}\n"
+            f"{line(1)}goal: {self.goal}\n"
+            f"{line(1)}distance: {self.distance}\n"
         )
 
         # P
@@ -238,13 +238,13 @@ class ControlledStepper(Stepper):
 
         # D
         pid += ControlledStepper.d * self.velocity
-        logger.debug(f"{line(3)}pid: {pid}")
+        logger.debug(f"{line(1)}pid: {pid}\n")
 
         target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
 
         logger.debug(
-            f"{line(2)}Velocity: {target_velocity}\n"
-            f"{line(1)}Acceleration: {abs(self.velocity - target_velocity)}")
+            f"{line(1)}Velocity: {target_velocity}\n"
+            f"{line(1)}Acceleration: {abs(self.velocity - target_velocity)}\n")
         return target_velocity
 
     def calc_steps(self):
@@ -255,7 +255,7 @@ class ControlledStepper(Stepper):
                              abs(1 / self.velocity))
 
         steps = math.floor(self.velocity * ControlledStepper.step_length)
-        logger.debug(f"{line(0)}calc steps: {steps}, delay: {step_delay}")
+        logger.debug(f"{line(0)}calc steps: {steps}, delay: {step_delay}\n")
         self.do_steps_sync(steps, step_delay)
 
         timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
