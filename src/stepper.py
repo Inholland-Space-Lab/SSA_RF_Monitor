@@ -9,11 +9,12 @@ from RPi import GPIO
 
 logger = logging.getLogger(__name__)
 
+UP = "\033[F"
+CLR = "\033[K"
+
 
 def line(i):
-    up = "\033[F"
-    clear = "\033[K"
-    return up*i + clear
+    return UP*i + CLR
 
 
 class Direction():
@@ -206,7 +207,7 @@ class ControlledStepper(Stepper):
         self.goal = 0
         self.distance_sum = 0
         logger.debug("init succesful")
-        logger.debug("\n" * 6)
+        logger.debug("\n" * 8)
         self.calc_steps()
 
     def move_to_sync(self, degrees=None, radians=None):
@@ -224,9 +225,10 @@ class ControlledStepper(Stepper):
 
         # logger.debug("controller")
         logger.debug(
-            f"{line(1)}position: {self.position}"
-            f"{line(1)}goal: {self.goal}"
-            f"{line(1)}distance: {self.distance}"
+            f"{(UP+CLR)*7}"
+            f"position: {self.position}\n"
+            f"goal: {self.goal}\n"
+            f"distance: {self.distance}"
         )
 
         # P
@@ -238,13 +240,13 @@ class ControlledStepper(Stepper):
 
         # D
         pid += ControlledStepper.d * self.velocity
-        logger.debug(f"{line(1)}pid: {pid}\n")
+        logger.debug(f"pid: {pid}")
 
         target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
 
         logger.debug(
-            f"{line(1)}Velocity: {target_velocity}"
-            f"{line(1)}Acceleration: {abs(self.velocity - target_velocity)}")
+            f"Velocity: {target_velocity}\n"
+            f"Acceleration: {abs(self.velocity - target_velocity)}")
         return target_velocity
 
     def calc_steps(self):
@@ -255,7 +257,7 @@ class ControlledStepper(Stepper):
                              abs(1 / self.velocity))
 
         steps = math.floor(self.velocity * ControlledStepper.step_length)
-        logger.debug(f"{line(0)}calc steps: {steps}, delay: {step_delay}")
+        logger.debug(f"calc steps: {steps}, delay: {step_delay}")
         self.do_steps_sync(steps, step_delay)
 
         timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
