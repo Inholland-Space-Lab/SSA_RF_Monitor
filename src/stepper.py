@@ -265,7 +265,7 @@ class ControlledStepper(Stepper):
 
         steps = math.floor(self.velocity * ControlledStepper.step_length)
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
-        self.do_steps_sync(steps, step_delay)
+        self.do_steps(steps, step_delay)
 
         timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
         timer.daemon = True
