@@ -189,9 +189,9 @@ class Stepper():
 class ControlledStepper(Stepper):
 
     step_length = 0.1
-    p = 0.1
+    p = 0.000005
     i = 0
-    d = 0.9
+    d = -0.001
 
     max_acceleration: float
     max_velocity: float
