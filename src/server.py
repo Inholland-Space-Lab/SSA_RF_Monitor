@@ -115,8 +115,8 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             ControlledStepper.d = data.get('d')
             ControlledStepper.step_length = data.get('time')
 
-            logger.info(f"Received new pid: {ControlledStepper.p}, {ControlledStepper.i}, {
-                        ControlledStepper.d}, {ControlledStepper.time}")
+            logger.info(f"Received new pid: {ControlledStepper.p}, {ControlledStepper.i}, "
+                        f"{ControlledStepper.d}, {ControlledStepper.time}")
             self.redirectHome()
 
     def redirectHome(self, permanently=False):
