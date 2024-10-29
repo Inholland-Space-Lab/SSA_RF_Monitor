@@ -28,7 +28,7 @@ class Dish:
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
 
-        Dish.azimuth_motor = Stepper(
+        Dish.azimuth_motor = ControlledStepper(
             step_pin=27, dir_pin=4, enable_pin=22)
         Dish.elevation_motor = Stepper(
             step_pin=24, dir_pin=18, enable_pin=23)
