@@ -75,9 +75,8 @@ class Stepper():
             self.job_queue.task_done()  # Signal that the job is done
 
     def home(self):
-        self.do_steps_sync(Direction.clockwise, int(self.steps_per_rev / 4))
-        self.do_steps_sync(Direction.counter_clockwise,
-                           int(self.steps_per_rev / 4))
+        self.do_steps_sync(int(self.steps_per_rev / 4))
+        self.do_steps_sync(-int(self.steps_per_rev / 4))
 
     def stop(self):
         # Stop the worker by adding a None job to signal shutdown
@@ -120,11 +119,10 @@ class Stepper():
         #     self.position -= step_count
         logger.debug(f"doing {step_count} steps")
         GPIO.output(self.enable_pin, GPIO.HIGH)
+        self.position += step_count
         if step_count > 0:
-            self.position += step_count
             GPIO.output(self.dir_pin, GPIO.LOW)
         else:
-            self.position -= step_count
             GPIO.output(self.dir_pin, GPIO.HIGH)
 
         delay_s = delay_ms/1000
@@ -145,11 +143,10 @@ class Stepper():
         GPIO.output(self.enable_pin, GPIO.HIGH)
         # GPIO.output(self.dir_pin, direction)
 
+        self.position += step_count
         if step_count > 0:
-            self.position += step_count
             GPIO.output(self.dir_pin, GPIO.LOW)
         else:
-            self.position -= step_count
             GPIO.output(self.dir_pin, GPIO.HIGH)
 
         if not total_time:
