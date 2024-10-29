@@ -221,7 +221,7 @@ class ControlledStepper(Stepper):
     def zero(self):
         super().zero()
         self.velocity = 0
-        self.acceleration = 0
+        self.distance_sum = 0
 
     def move_to_sync(self, degrees=None, radians=None):
         target_rev = 0
