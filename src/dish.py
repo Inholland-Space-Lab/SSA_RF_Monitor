@@ -30,7 +30,7 @@ class Dish:
 
         Dish.azimuth_motor = ControlledStepper(
             step_pin=27, dir_pin=4, enable_pin=22)
-        Dish.elevation_motor = ControlledStepper(
+        Dish.elevation_motor = Stepper(
             step_pin=24, dir_pin=18, enable_pin=23)
 
     @staticmethod
