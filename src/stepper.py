@@ -261,7 +261,7 @@ class ControlledStepper(Stepper):
         return target_velocity
 
     def calc_steps(self):
-        self.velocity = self.controller()
+        self.velocity += self.controller()
         step_delay = ControlledStepper.step_length
         if not (self.velocity == 0):
             step_delay = min(ControlledStepper.step_length,
