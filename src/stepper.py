@@ -129,7 +129,7 @@ class Stepper():
 
         delay_s = delay_ms/1000
 
-        for i in range(step_count):
+        for i in range(abs(step_count)):
             time.sleep(delay_s)
             GPIO.output(self.step_pin, GPIO.HIGH)
             time.sleep(delay_s)
