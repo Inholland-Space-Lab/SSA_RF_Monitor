@@ -50,7 +50,7 @@ function updatePidValues() {
   const p = document.getElementById('pid-p').value;
   const i = document.getElementById('pid-i').value;
   const d = document.getElementById('pid-d').value;
-  const t = document.getElementById('pid-time').value;
+  const time = document.getElementById('pid-time').value;
 
   fetch(`${window.location.origin}/api/set-pid`,
       {
