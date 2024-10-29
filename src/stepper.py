@@ -222,7 +222,7 @@ class ControlledStepper(Stepper):
 
         # logger.debug("controller")
         logger.debug(
-            f"{(UP+CLR)*10}"
+            f"{(UP+CLR)*12}"
             f"p: {ControlledStepper.p}\n"
             f"i: {ControlledStepper.i}\n"
             f"d: {ControlledStepper.d}"
@@ -262,6 +262,8 @@ class ControlledStepper(Stepper):
 
         steps = math.floor(self.velocity * ControlledStepper.step_length)
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
+        logger.debug(
+            f"will take: {steps * step_delay}, out of: {ControlledStepper.step_length}")
         self.do_steps_sync(steps, step_delay)
 
         timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
