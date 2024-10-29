@@ -99,7 +99,7 @@ class Stepper():
                      f"Target Position {target_position}\n"
                      f"Taking {steps} steps")
 
-        self.do_steps_sync(steps, 2)
+        self.do_steps_sync(steps)
         # if steps > 0:
         #     self.do_steps_sync(
         #         Direction.counter_clockwise, steps, 2)
