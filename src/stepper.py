@@ -10,6 +10,12 @@ from RPi import GPIO
 logger = logging.getLogger(__name__)
 
 
+def line(i):
+    up = "\033[F"
+    clear = "\033[K"
+    return up*i + clear
+
+
 class Direction():
     clockwise = GPIO.HIGH
     counter_clockwise = GPIO.LOW
@@ -200,6 +206,7 @@ class ControlledStepper(Stepper):
         self.goal = 0
         self.distance_sum = 0
         logger.debug("init succesful")
+        logger.debug("\n" * 6)
         self.calc_steps()
 
     def move_to_sync(self, degrees=None, radians=None):
@@ -217,9 +224,9 @@ class ControlledStepper(Stepper):
 
         # logger.debug("controller")
         logger.debug(
-            f"\033[F\033[Kposition: {self.position}\n"
-            f"\033[F\033[Kgoal: {self.goal}\n"
-            f"\033[F\033[Kdistance: {self.distance}"
+            f"{line(6)}position: {self.position}\n"
+            f"{line(5)}goal: {self.goal}\n"
+            f"{line(4)}distance: {self.distance}"
         )
 
         # P
@@ -231,13 +238,13 @@ class ControlledStepper(Stepper):
 
         # D
         pid += ControlledStepper.d * self.velocity
-        logger.debug(f"\033[F\033[Kpid: {pid}")
+        logger.debug(f"{line(3)}pid: {pid}")
 
         target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
 
         logger.debug(
-            f"\033[F\033[KVelocity: {target_velocity}\n"
-            f"\033[F\033[KAcceleration: {abs(self.velocity - target_velocity)}")
+            f"{line(2)}Velocity: {target_velocity}\n"
+            f"{line(1)}Acceleration: {abs(self.velocity - target_velocity)}")
         return target_velocity
 
     def calc_steps(self):
@@ -248,7 +255,7 @@ class ControlledStepper(Stepper):
                              abs(1 / self.velocity))
 
         steps = math.floor(self.velocity * ControlledStepper.step_length)
-        logger.debug(f"\033[F\033[Kcalc steps: {steps}, delay: {step_delay}")
+        logger.debug(f"{line(0)}calc steps: {steps}, delay: {step_delay}")
         self.do_steps_sync(steps, step_delay)
 
         timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
