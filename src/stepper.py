@@ -206,7 +206,7 @@ class ControlledStepper(Stepper):
     def distance(self) -> int:
         return self.goal - self.position
 
-    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1E12, max_acceleration=1E12):
+    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1000, max_acceleration=1000):
         super().__init__(step_pin, dir_pin, enable_pin)
         self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
@@ -214,7 +214,8 @@ class ControlledStepper(Stepper):
         self.goal = 0
         self.distance_sum = 0
         self._last_time = 0
-        self.pid = PID(0.000005, 0, 0.001, sample_time=None)
+        self.pid = PID(0.000005, 0, 0.001, sample_time=None,
+                       output_limits=(-max_acceleration, max_acceleration))
         logger.debug("init succesful")
         logger.debug("\n" * 8)
         self.calc_steps()
@@ -226,6 +227,7 @@ class ControlledStepper(Stepper):
         super().zero()
         self.velocity = 0
         self.distance_sum = 0
+        self.pid._integral = 0
 
     def tune(self, p, i, d):
         self.pid.Kp = p
