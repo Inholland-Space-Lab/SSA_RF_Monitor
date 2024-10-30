@@ -118,7 +118,7 @@ class Stepper():
         # logger.debug("do_steps_sync")
         self.job_queue.put(args)
 
-    def do_steps(self, step_count, delay=0000.1, *args):
+    def do_steps(self, step_count, delay=0.0001, *args):
         # direction
 
         # if direction:
@@ -297,7 +297,7 @@ class ControlledStepper(Stepper):
             f"p: {self.position:.0f}\n"
             f"goal: {self.goal:.0f}\n"
             f"distance: {self.distance:.0f}\n"
-            f"delay: {step_delay:.0f}, "
+            f"delay: {step_delay:.4f}, "
             f"out of: {ControlledStepper.max_delay}"
         )
 
