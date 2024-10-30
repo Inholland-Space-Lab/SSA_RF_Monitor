@@ -117,7 +117,7 @@ class Stepper():
         # logger.debug("do_steps_sync")
         self.job_queue.put(args)
 
-    def do_steps(self, step_count, delay_ms=0.1):
+    def do_steps(self, step_count, delay_ms=0.1, *args):
         # direction
 
         # if direction:
