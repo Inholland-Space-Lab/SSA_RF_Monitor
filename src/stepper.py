@@ -292,7 +292,7 @@ class ControlledStepper(Stepper):
             self.do_steps_sync(0, step_delay, True)
 
         logger.debug(
-            f"{(UP+CLR)*7}"
+            f"{(UP+CLR)*6}"
             f"a: {self.acceleration:.0f}\n"
             f"v: {self.velocity:.0f}\n"
             f"p: {self.position:.0f}\n"
