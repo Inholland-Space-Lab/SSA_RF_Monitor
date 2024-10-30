@@ -289,19 +289,6 @@ class ControlledStepper(Stepper):
             step_delay = min(ControlledStepper.max_delay,
                              abs(1 / self.velocity))
 
-        # do a step with that delay
-        if step_delay >= ControlledStepper.max_delay:
-            self.do_steps_sync(1, step_delay, True)
-        else:
-            # for low velocities step delay can get very high,
-            # do no step and calculate again after max_delay
-            # to avoid stalling the steppers
-            timer = threading.Timer(
-                ControlledStepper.max_delay,
-                self.calc_steps)
-            timer.daemon = True  # Set the timer thread as a daemon thread
-            timer.start()
-
         logger.debug(
             f"{(UP+CLR)*8}"
             f"dt: {dt:.4f}\n"
@@ -313,6 +300,20 @@ class ControlledStepper(Stepper):
             f"delay: {step_delay:.0f}, "
             f"out of: {ControlledStepper.max_delay}"
         )
+
+        # do a step with that delay
+        if step_delay >= ControlledStepper.max_delay:
+            self.do_steps_sync(1, step_delay/2, True)
+        else:
+            # for low velocities step delay can get very high,
+            # do no step and calculate again after max_delay
+            # to avoid stalling the steppers
+            timer = threading.Timer(
+                ControlledStepper.max_delay,
+                self.calc_steps)
+            timer.daemon = True  # Set the timer thread as a daemon thread
+            timer.start()
+            logger.debug("Skipping steps")
 
     def on_task_done(self, *args):
         do_pid = args[2]
