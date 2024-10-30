@@ -293,7 +293,7 @@ class ControlledStepper(Stepper):
         (p, i, d) = self.pid.components
         logger.debug(
             f"{(UP+CLR)*12}"
-            f"{"-"*40}\n"
+            f"{'-'*40}\n"
             f"dt: {dt:.4f}\n"
             f"p: {self.p:.4f}\n"
             f"i: {self.i:.4f}\n"
