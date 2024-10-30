@@ -110,13 +110,14 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             data = json.loads(post_data.decode('utf-8'))
 
             # Extract the two values from the data
-            ControlledStepper.p = float(data.get('p'))
-            ControlledStepper.i = float(data.get('i'))
-            ControlledStepper.d = float(data.get('d'))
-            ControlledStepper.step_length = float(data.get('time'))
+            p = float(data.get('p'))
+            i = float(data.get('i'))
+            d = float(data.get('d'))
+            Dish.tune_pid(p, i, d)
+            ControlledStepper.max_delay = float(data.get('time'))
 
-            logger.info(f"Received new pid: {ControlledStepper.p}, {ControlledStepper.i}, "
-                        f"{ControlledStepper.d}, {ControlledStepper.time}")
+            logger.info(f"Received new pid: {p}, {i}, "
+                        f"{d}, {ControlledStepper.max_delay}")
             self.redirectHome()
 
     def redirectHome(self, permanently=False):

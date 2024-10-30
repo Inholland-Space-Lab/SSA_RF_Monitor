@@ -41,6 +41,13 @@ class Dish:
         Dish.elevation_motor.move_to_sync(degrees=elevation)
 
     @staticmethod
+    def tune_pid(p, i, d, elevation=False):
+        if elevation:
+            Dish.elevation_motor.tune(p, i, d)
+        else:
+            Dish.azimuth_motor.tune(p, i, d)
+
+    @staticmethod
     def zero():
         Dish.azimuth_motor.zero()
         Dish.elevation_motor.zero()

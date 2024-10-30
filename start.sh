@@ -15,8 +15,8 @@ python -m venv --system-site-packages ./.venv
 ./.venv/bin/pip install Mock.GPIO               # gpio pins on pc
 ./.venv/bin/pip install smbus                   # i2c
 ./.venv/bin/pip install adafruit-circuitpython-bno055 #bno055 library
-./.venv/bin/pip install multiprocess
-./.venv/bin/pip uninstall rpimotorlib             # Stepper motors
+./.venv/bin/pip install multiprocess            # non-blocking code
+./.venv/bin/pip install simple-pid              # Stepper motor control
 
 # List installed packages
 ./.venv/bin/pip list

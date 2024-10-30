@@ -4,6 +4,7 @@ import queue
 import logging
 import multiprocessing
 import time
+from simple_pid import PID
 from config import Config
 from RPi import GPIO
 
@@ -188,11 +189,12 @@ class Stepper():
 
 class ControlledStepper(Stepper):
 
-    step_length = 0.1  # seconds
+    max_delay = 1000  # milliseconds
     p = 0.000005
     i = 0
     d = 0.001
 
+    pid: PID
     max_acceleration: float  # steps per second^2
     max_velocity: float  # steps per second
     velocity: float  # steps per second
@@ -211,6 +213,7 @@ class ControlledStepper(Stepper):
         self.velocity = 0
         self.goal = 0
         self.distance_sum = 0
+        self.pid = PID(0.000005, 0, 0.001)
         logger.debug("init succesful")
         logger.debug("\n" * 8)
         self.calc_steps()
@@ -222,6 +225,11 @@ class ControlledStepper(Stepper):
         super().zero()
         self.velocity = 0
         self.distance_sum = 0
+
+    def tune(self, p, i, d):
+        self.pid.Kp = p
+        self.pid.Ki = i
+        self.pid.Kd = d
 
     def move_to_sync(self, degrees=None, radians=None):
         target_rev = 0
@@ -240,54 +248,61 @@ class ControlledStepper(Stepper):
         pid += ControlledStepper.p * self.distance
 
         # I
-        self.distance_sum += self.distance * ControlledStepper.step_length
+        self.distance_sum += self.distance * ControlledStepper.max_delay
         pid += ControlledStepper.i * self.distance_sum
 
         # D
-        pid -= ControlledStepper.d * self.distance / ControlledStepper.step_length
+        pid -= ControlledStepper.d * self.distance / ControlledStepper.max_delay
 
         pid = max(-self.max_acceleration, min(self.max_acceleration, pid))
 
-        logger.debug(
-            f"{(UP+CLR)*11}"
-            f"p: {ControlledStepper.p}\n"
-            f"i: {ControlledStepper.i}\n"
-            f"d: {ControlledStepper.d}\n"
-            f"position: {self.position}\n"
-            f"goal: {self.goal}\n"
-            f"distance: {self.distance}\n"
-            f"pid: {pid}"
-        )
+        # logger.debug(
+        #     f"{(UP+CLR)*11}"
+        #     f"p: {ControlledStepper.p}\n"
+        #     f"i: {ControlledStepper.i}\n"
+        #     f"d: {ControlledStepper.d}\n"
+        #     f"position: {self.position}\n"
+        #     f"goal: {self.goal}\n"
+        #     f"distance: {self.distance}\n"
+        #     f"pid: {pid}"
+        # )
 
         return pid
 
     def calc_steps(self):
         # update dynamics
-        self.acceleration = self.controller()
-        self.velocity += self.acceleration * ControlledStepper.step_length
+        self.acceleration = self.pid(self.distance)
+        self.velocity += self.acceleration * ControlledStepper.max_delay
         self.velocity = max(-self.max_velocity,
                             min(self.max_velocity, self.velocity))
 
         # get delay between steps for this velocity
-        step_delay = ControlledStepper.step_length
+        step_delay = ControlledStepper.max_delay
         if not (self.velocity == 0):
-            step_delay = min(ControlledStepper.step_length,
+            step_delay = min(ControlledStepper.max_delay,
                              abs(1 / self.velocity))
 
-        steps = int(self.velocity * ControlledStepper.step_length)
+        # do a step with that delay
+        if step_delay >= ControlledStepper.max_delay:
+            self.do_steps_sync(1, step_delay, True)
+        else:
+            # for low velocities step delay can get very high,
+            # do no step and calculate again after max_delay
+            # to avoid stalling the steppers
+            self.do_steps_sync(0, step_delay, True)
 
         logger.debug(
-            f"calc steps: {steps}, delay: {step_delay}\n"
-            f"will take: {steps * step_delay} seconds, "
-            f"out of: {ControlledStepper.step_length}"
+            f"{(UP+CLR)*7}"
+            f"a: {self.acceleration:.0f}\n"
+            f"v: {self.velocity:.0f}\n"
+            f"p: {self.position:.0f}\n"
+            f"goal: {self.goal:.0f}\n"
+            f"distance: {self.distance:.0f}\n"
+            f"delay: {step_delay:.0f}, "
+            f"out of: {ControlledStepper.max_delay}"
         )
-        self.do_steps_sync(steps, step_delay, True)
-
-        # timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
-        # timer.daemon = True
-        # timer.start()
 
     def on_task_done(self, *args):
-        logger.debug(f"args: {args}")
-        if args[2]:
+        do_pid = args[2]
+        if do_pid:
             self.calc_steps()
