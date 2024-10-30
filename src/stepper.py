@@ -73,9 +73,9 @@ class Stepper():
                 break
             self.do_steps(*args)
             self.job_queue.task_done()  # Signal that the job is done
-            self.on_task_done()
+            self.on_task_done(*args)
 
-    def on_task_done(self):
+    def on_task_done(self, *args):
         pass
 
     def zero(self):
@@ -113,9 +113,9 @@ class Stepper():
         #     self.do_steps_sync(
         #         Direction.clockwise, -steps, 2)
 
-    def do_steps_sync(self, *args):
+    def do_steps_sync(self, *args, **kwargs):
         # logger.debug("do_steps_sync")
-        self.job_queue.put(args)
+        self.job_queue.put(args, kwargs)
 
     def do_steps(self, step_count, delay_ms=0.1):
         # direction
@@ -188,25 +188,25 @@ class Stepper():
 
 class ControlledStepper(Stepper):
 
-    step_length = 0.1
+    step_length = 0.1  # seconds
     p = 0.000005
     i = 0
-    d = -0.001
+    d = 0.001
 
-    max_acceleration: float
-    max_velocity: float
-    velocity: float
-    acceleration: float
-    goal: int
-    distance_sum: float
+    max_acceleration: float  # steps per second^2
+    max_velocity: float  # steps per second
+    velocity: float  # steps per second
+    acceleration: float  # steps per second^2
+    goal: int  # steps
+    distance_sum: float  # steps
 
     @property
     def distance(self) -> int:
         return self.goal - self.position
 
-    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1E12):
+    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=1E12, max_acceleration=1E12):
         super().__init__(step_pin, dir_pin, enable_pin)
-        # self.max_acceleration = max_acceleration
+        self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
         self.velocity = 0
         self.goal = 0
@@ -236,16 +236,11 @@ class ControlledStepper(Stepper):
         # PID
         pid = 0
 
-        # logger.debug("controller")
         logger.debug(
             f"{(UP+CLR)*12}"
             f"p: {ControlledStepper.p}\n"
             f"i: {ControlledStepper.i}\n"
-            f"d: {ControlledStepper.d}"
-        )
-        # logger.debug("controller")
-        logger.debug(
-            # f"{(UP+CLR)*7}"
+            f"d: {ControlledStepper.d}\n"
             f"position: {self.position}\n"
             f"goal: {self.goal}\n"
             f"distance: {self.distance}"
@@ -255,22 +250,25 @@ class ControlledStepper(Stepper):
         pid += ControlledStepper.p * self.distance
 
         # I
+        self.distance_sum += self.distance * ControlledStepper.step_length
         pid += ControlledStepper.i * self.distance_sum
-        self.distance_sum += self.distance
 
         # D
-        pid += ControlledStepper.d * self.velocity
+        pid -= ControlledStepper.d * self.distance / ControlledStepper.step_length
         logger.debug(f"pid: {pid}")
 
-        target_velocity = max(-self.max_velocity, min(self.max_velocity, pid))
+        target = max(-self.max_acceleration, min(self.max_acceleration, pid))
 
-        logger.debug(
-            f"Velocity: {target_velocity}\n"
-            f"Acceleration: {abs(self.velocity - target_velocity)}")
-        return target_velocity
+        return target
 
     def calc_steps(self):
-        self.velocity += self.controller()
+        # update dynamics
+        self.acceleration = self.controller()
+        self.velocity += self.acceleration * ControlledStepper.step_length
+        self.velocity = max(-self.max_velocity,
+                            min(self.max_velocity, self.velocity))
+
+        # get delay between steps for this velocity
         step_delay = ControlledStepper.step_length
         if not (self.velocity == 0):
             step_delay = min(ControlledStepper.step_length,
@@ -280,11 +278,13 @@ class ControlledStepper(Stepper):
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
         logger.debug(
             f"will take: {steps * step_delay}, out of: {ControlledStepper.step_length}")
-        self.do_steps_sync(steps, step_delay)
+        self.do_steps_sync(steps, step_delay, do_pid=True)
 
         # timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
         # timer.daemon = True
         # timer.start()
 
-    def on_task_done(self):
-        self.calc_steps()
+    def on_task_done(self, *args, **kwargs):
+        logger.debug(f"args: {args}\nkwargs: {kwargs}")
+        if kwargs.get("do_pid", False):
+            self.calc_steps()
