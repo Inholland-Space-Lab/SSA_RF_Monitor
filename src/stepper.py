@@ -249,7 +249,7 @@ class ControlledStepper(Stepper):
         pid = max(-self.max_acceleration, min(self.max_acceleration, pid))
 
         logger.debug(
-            f"{(UP+CLR)*10}"
+            f"{(UP+CLR)*11}"
             f"p: {ControlledStepper.p}\n"
             f"i: {ControlledStepper.i}\n"
             f"d: {ControlledStepper.d}\n"
