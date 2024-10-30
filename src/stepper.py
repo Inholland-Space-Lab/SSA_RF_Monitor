@@ -189,7 +189,7 @@ class Stepper():
 
 class ControlledStepper(Stepper):
 
-    max_delay = 1000  # milliseconds
+    max_delay = 1000.0  # milliseconds
     p = 0.000005
     i = 0
     d = 0.001
