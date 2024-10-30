@@ -113,9 +113,9 @@ class Stepper():
         #     self.do_steps_sync(
         #         Direction.clockwise, -steps, 2)
 
-    def do_steps_sync(self, *args, **kwargs):
+    def do_steps_sync(self, *args):
         # logger.debug("do_steps_sync")
-        self.job_queue.put(args, kwargs)
+        self.job_queue.put(args)
 
     def do_steps(self, step_count, delay_ms=0.1):
         # direction
@@ -278,13 +278,13 @@ class ControlledStepper(Stepper):
         logger.debug(f"calc steps: {steps}, delay: {step_delay}")
         logger.debug(
             f"will take: {steps * step_delay}, out of: {ControlledStepper.step_length}")
-        self.do_steps_sync(steps, step_delay, do_pid=True)
+        self.do_steps_sync(steps, step_delay, True)
 
         # timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
         # timer.daemon = True
         # timer.start()
 
-    def on_task_done(self, *args, **kwargs):
+    def on_task_done(self, *args):
         logger.debug(f"args: {args}\nkwargs: {kwargs}")
-        if kwargs.get("do_pid", False):
+        if args[2]:
             self.calc_steps()
