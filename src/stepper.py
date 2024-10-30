@@ -285,6 +285,6 @@ class ControlledStepper(Stepper):
         # timer.start()
 
     def on_task_done(self, *args):
-        logger.debug(f"args: {args}\nkwargs: {kwargs}")
+        logger.debug(f"args: {args}")
         if args[2]:
             self.calc_steps()
