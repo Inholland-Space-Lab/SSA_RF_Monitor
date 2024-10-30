@@ -213,7 +213,8 @@ class ControlledStepper(Stepper):
         self.velocity = 0
         self.goal = 0
         self.distance_sum = 0
-        self.pid = PID(0.000005, 0, 0.001)
+        self._last_time = 0
+        self.pid = PID(0.000005, 0, 0.001, sample_time=None)
         logger.debug("init succesful")
         logger.debug("\n" * 8)
         self.calc_steps()
@@ -270,9 +271,15 @@ class ControlledStepper(Stepper):
         return pid
 
     def calc_steps(self):
+        # update time
+        now = time.monotonic()
+        dt = now - self._last_time
+        self._last_time = now
+
         # update dynamics
         self.acceleration = self.pid(self.distance)
-        self.velocity += self.acceleration * ControlledStepper.max_delay
+        self.pid.sample_time
+        self.velocity += self.acceleration * dt
         self.velocity = max(-self.max_velocity,
                             min(self.max_velocity, self.velocity))
 
@@ -292,9 +299,9 @@ class ControlledStepper(Stepper):
             self.do_steps_sync(0, step_delay, True)
 
         logger.debug(
-            f"{(UP+CLR)*6}"
-            f"a: {self.acceleration:.0f}\n"
-            f"v: {self.velocity:.0f}\n"
+            f"{(UP+CLR)*7}"
+            f"a: {self.acceleration:.4f}\n"
+            f"v: {self.velocity:.4f}\n"
             f"p: {self.position:.0f}\n"
             f"goal: {self.goal:.0f}\n"
             f"distance: {self.distance:.0f}\n"
