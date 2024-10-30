@@ -118,7 +118,7 @@ class Stepper():
         # logger.debug("do_steps_sync")
         self.job_queue.put(args)
 
-    def do_steps(self, step_count, delay_ms=0.1, *args):
+    def do_steps(self, step_count, delay=0000.1, *args):
         # direction
 
         # if direction:
@@ -133,12 +133,12 @@ class Stepper():
         else:
             GPIO.output(self.dir_pin, GPIO.HIGH)
 
-        delay_s = delay_ms/1000
+        # delay_s = delay_ms/1000
 
         for i in range(abs(step_count)):
-            time.sleep(delay_s)
+            time.sleep(delay)
             GPIO.output(self.step_pin, GPIO.HIGH)
-            time.sleep(delay_s)
+            time.sleep(delay)
             GPIO.output(self.step_pin, GPIO.LOW)
 
     def do_steps_exp(self, step_count, total_time=None):
@@ -189,7 +189,7 @@ class Stepper():
 
 class ControlledStepper(Stepper):
 
-    max_delay = 1000.0  # milliseconds
+    max_delay = 1.0  # seconds
     p = 0.000005
     i = 0
     d = 0.001
@@ -296,10 +296,15 @@ class ControlledStepper(Stepper):
             # for low velocities step delay can get very high,
             # do no step and calculate again after max_delay
             # to avoid stalling the steppers
-            self.do_steps_sync(0, step_delay, True)
+            timer = threading.Timer(
+                ControlledStepper.max_delay,
+                self.calc_steps)
+            timer.daemon = True  # Set the timer thread as a daemon thread
+            timer.start()
 
         logger.debug(
-            f"{(UP+CLR)*7}"
+            f"{(UP+CLR)*8}"
+            f"dt: {dt:.4f}\n"
             f"a: {self.acceleration:.4f}\n"
             f"v: {self.velocity:.4f}\n"
             f"p: {self.position:.0f}\n"
