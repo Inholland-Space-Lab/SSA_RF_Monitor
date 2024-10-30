@@ -302,7 +302,7 @@ class ControlledStepper(Stepper):
         )
 
         # do a step with that delay
-        if step_delay >= ControlledStepper.max_delay:
+        if step_delay < ControlledStepper.max_delay:
             self.do_steps_sync(1, step_delay/2, True)
         else:
             # for low velocities step delay can get very high,
