@@ -214,7 +214,7 @@ class ControlledStepper(Stepper):
         self.goal = 0
         self.distance_sum = 0
         self._last_time = 0
-        self.pid = PID(0.000005, 0, 0.001, sample_time=None,
+        self.pid = PID(-1, 0, -2.5, sample_time=None,
                        output_limits=(-max_acceleration, max_acceleration))
         logger.debug("init succesful")
         logger.debug("\n" * 8)
@@ -290,13 +290,17 @@ class ControlledStepper(Stepper):
         if not (self.velocity == 0):
             step_delay = min(ControlledStepper.max_delay,
                              abs(1 / self.velocity))
-
+        (p, i, d) = self.pid.components
         logger.debug(
-            f"{(UP+CLR)*8}"
+            f"{(UP+CLR)*12}"
+            f"{"-"*40}\n"
             f"dt: {dt:.4f}\n"
+            f"p: {self.p:.4f}\n"
+            f"i: {self.i:.4f}\n"
+            f"d: {self.d:.0f}\n"
             f"a: {self.acceleration:.4f}\n"
             f"v: {self.velocity:.4f}\n"
-            f"p: {self.position:.0f}\n"
+            f"position: {self.position:.0f}\n"
             f"goal: {self.goal:.0f}\n"
             f"distance: {self.distance:.0f}\n"
             f"delay: {step_delay:.4f}, "
