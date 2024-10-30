@@ -236,16 +236,6 @@ class ControlledStepper(Stepper):
         # PID
         pid = 0
 
-        logger.debug(
-            f"{(UP+CLR)*12}"
-            f"p: {ControlledStepper.p}\n"
-            f"i: {ControlledStepper.i}\n"
-            f"d: {ControlledStepper.d}\n"
-            f"position: {self.position}\n"
-            f"goal: {self.goal}\n"
-            f"distance: {self.distance}"
-        )
-
         # P
         pid += ControlledStepper.p * self.distance
 
@@ -255,11 +245,21 @@ class ControlledStepper(Stepper):
 
         # D
         pid -= ControlledStepper.d * self.distance / ControlledStepper.step_length
-        logger.debug(f"pid: {pid}")
 
-        target = max(-self.max_acceleration, min(self.max_acceleration, pid))
+        pid = max(-self.max_acceleration, min(self.max_acceleration, pid))
 
-        return target
+        logger.debug(
+            f"{(UP+CLR)*10}"
+            f"p: {ControlledStepper.p}\n"
+            f"i: {ControlledStepper.i}\n"
+            f"d: {ControlledStepper.d}\n"
+            f"position: {self.position}\n"
+            f"goal: {self.goal}\n"
+            f"distance: {self.distance}\n"
+            f"pid: {pid}"
+        )
+
+        return pid
 
     def calc_steps(self):
         # update dynamics
@@ -275,9 +275,12 @@ class ControlledStepper(Stepper):
                              abs(1 / self.velocity))
 
         steps = int(self.velocity * ControlledStepper.step_length)
-        logger.debug(f"calc steps: {steps}, delay: {step_delay}")
+
         logger.debug(
-            f"will take: {steps * step_delay}, out of: {ControlledStepper.step_length}")
+            f"calc steps: {steps}, delay: {step_delay}\n"
+            f"will take: {steps * step_delay} seconds, "
+            f"out of: {ControlledStepper.step_length}"
+        )
         self.do_steps_sync(steps, step_delay, True)
 
         # timer = threading.Timer(ControlledStepper.step_length, self.calc_steps)
