@@ -206,7 +206,11 @@ class ControlledStepper(Stepper):
 
     @property
     def distance(self) -> int:
-        return self.goal - self.position
+
+        (yaw, roll, pitch) = self.sensor.euler
+        position = yaw / 360 * self.steps_per_rev
+
+        return self.goal - position
 
     def __init__(self, step_pin, dir_pin, enable_pin,
                  resolution=None, gear_ratio=None,
@@ -251,8 +255,8 @@ class ControlledStepper(Stepper):
 
     def calc_steps(self):
         # get position
-        (yaw, roll, pitch) = self.sensor.euler
-        self.move_to_sync(degrees=yaw)
+        # (yaw, roll, pitch) = self.sensor.euler
+        # self.move_to_sync(degrees=yaw)
 
         # update time
         now = time.monotonic()
