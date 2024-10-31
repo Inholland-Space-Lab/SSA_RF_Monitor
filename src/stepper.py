@@ -250,6 +250,10 @@ class ControlledStepper(Stepper):
         self.goal = target_rev * self.steps_per_rev
 
     def calc_steps(self):
+        # get position
+        (yaw, roll, pitch) = self.sensor.euler
+        self.move_to_sync(degrees=yaw)
+
         # update time
         now = time.monotonic()
         dt = now - self._last_time
