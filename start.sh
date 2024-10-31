@@ -17,6 +17,9 @@ python -m venv --system-site-packages ./.venv
 ./.venv/bin/pip install adafruit-circuitpython-bno055 #bno055 library
 ./.venv/bin/pip install multiprocess            # non-blocking code
 ./.venv/bin/pip install simple-pid              # Stepper motor control
+./.venv/bin/pip install adafruit-circuitpython-register
+./.venv/bin/pip install adafruit-circuitpython-busdevice
+./.venv/bin/pip install adafruit-circuitpython-bno055
 
 # List installed packages
 ./.venv/bin/pip list

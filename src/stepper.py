@@ -4,6 +4,7 @@ import queue
 import logging
 import multiprocessing
 import time
+from adafruit_bno055 import BNO055_I2C
 from simple_pid import PID
 from config import Config
 from RPi import GPIO
@@ -193,6 +194,7 @@ class ControlledStepper(Stepper):
     p = 0.000005
     i = 0
     d = 0.001
+    sensor: BNO055_I2C
 
     pid: PID
     max_acceleration: float  # steps per second^2
@@ -206,10 +208,14 @@ class ControlledStepper(Stepper):
     def distance(self) -> int:
         return self.goal - self.position
 
-    def __init__(self, step_pin, dir_pin, enable_pin, resolution=None, gear_ratio=None, max_speed=5000, max_acceleration=1000):
+    def __init__(self, step_pin, dir_pin, enable_pin,
+                 resolution=None, gear_ratio=None,
+                 max_speed=5000, max_acceleration=1000,
+                 sensor=None):
         super().__init__(step_pin, dir_pin, enable_pin)
         self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
+        self.sensor = sensor
         self.velocity = 0
         self.goal = 0
         self.distance_sum = 0
@@ -243,35 +249,6 @@ class ControlledStepper(Stepper):
 
         self.goal = target_rev * self.steps_per_rev
 
-    def controller(self):
-        # PID
-        pid = 0
-
-        # P
-        pid += ControlledStepper.p * self.distance
-
-        # I
-        self.distance_sum += self.distance * ControlledStepper.max_delay
-        pid += ControlledStepper.i * self.distance_sum
-
-        # D
-        pid -= ControlledStepper.d * self.distance / ControlledStepper.max_delay
-
-        pid = max(-self.max_acceleration, min(self.max_acceleration, pid))
-
-        # logger.debug(
-        #     f"{(UP+CLR)*11}"
-        #     f"p: {ControlledStepper.p}\n"
-        #     f"i: {ControlledStepper.i}\n"
-        #     f"d: {ControlledStepper.d}\n"
-        #     f"position: {self.position}\n"
-        #     f"goal: {self.goal}\n"
-        #     f"distance: {self.distance}\n"
-        #     f"pid: {pid}"
-        # )
-
-        return pid
-
     def calc_steps(self):
         # update time
         now = time.monotonic()
@@ -291,21 +268,23 @@ class ControlledStepper(Stepper):
             step_delay = min(ControlledStepper.max_delay,
                              abs(1 / self.velocity))
         (p, i, d) = self.pid.components
-        logger.debug(
-            f"{(UP+CLR)*12}"
-            f"{'-'*40}\n"
-            f"dt: {dt:.4f}\n"
-            f"p: {p:.4f}\n"
-            f"i: {i:.4f}\n"
-            f"d: {d:.4f}\n"
-            f"a: {self.acceleration:.4f}\n"
-            f"v: {self.velocity:.4f}\n"
-            f"position: {self.position:.0f}\n"
-            f"goal: {self.goal:.0f}\n"
-            f"distance: {self.distance:.0f}\n"
-            f"delay: {step_delay:.4f}, "
-            f"out of: {ControlledStepper.max_delay}"
-        )
+        # logger.debug(
+        #     f"{(UP+CLR)*12}"
+        #     f"{'-'*40}\n"
+        #     f"dt: {dt:.4f}\n"
+        #     f"p: {p:.4f}\n"
+        #     f"i: {i:.4f}\n"
+        #     f"d: {d:.4f}\n"
+        #     f"a: {self.acceleration:.4f}\n"
+        #     f"v: {self.velocity:.4f}\n"
+        #     f"position: {self.position:.0f}\n"
+        #     f"goal: {self.goal:.0f}\n"
+        #     f"distance: {self.distance:.0f}\n"
+        #     f"delay: {step_delay:.4f}, "
+        #     f"out of: {ControlledStepper.max_delay}"
+        # )
+
+        logger.debug(f"{UP+CLR}Euler: {self.sensor.euler}")
 
         # do a step with that delay
         if step_delay < ControlledStepper.max_delay:

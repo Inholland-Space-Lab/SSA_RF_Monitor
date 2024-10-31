@@ -2,6 +2,8 @@ import logging
 import time
 from config import Config
 from RPi import GPIO
+from adafruit_bno055 import BNO055_I2C
+import board
 
 from stepper import ControlledStepper, Direction, Stepper
 
@@ -14,6 +16,7 @@ class Dish:
     # motors = list()
     azimuth_motor: Stepper
     elevation_motor: Stepper
+    sensor: BNO055_I2C
 
     # def configure():
     #     # create each of the motors and set their microstep config
@@ -28,10 +31,17 @@ class Dish:
         # TODO: start the belt continuously instead of 200 steps
         logger.info("starting dish")
 
+        Dish.setup_sensors()
+
         Dish.azimuth_motor = ControlledStepper(
-            step_pin=27, dir_pin=4, enable_pin=22)
+            step_pin=27, dir_pin=4, enable_pin=22, sensor=Dish.sensor)
         Dish.elevation_motor = Stepper(
             step_pin=24, dir_pin=18, enable_pin=23)
+
+    @staticmethod
+    def setup_sensors():
+        i2c = board.I2C()
+        Dish.sensor = BNO055_I2C(i2c)
 
     @staticmethod
     def set_target(azimuth, elevation):
