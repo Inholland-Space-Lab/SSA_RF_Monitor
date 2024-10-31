@@ -210,7 +210,7 @@ class ControlledStepper(Stepper):
 
     def __init__(self, step_pin, dir_pin, enable_pin,
                  resolution=None, gear_ratio=None,
-                 max_speed=5000, max_acceleration=1000,
+                 max_speed=10000, max_acceleration=1000,
                  sensor=None):
         super().__init__(step_pin, dir_pin, enable_pin)
         self.max_acceleration = max_acceleration
