@@ -272,23 +272,23 @@ class ControlledStepper(Stepper):
             step_delay = min(ControlledStepper.max_delay,
                              abs(1 / self.velocity))
         (p, i, d) = self.pid.components
-        # logger.debug(
-        #     f"{(UP+CLR)*12}"
-        #     f"{'-'*40}\n"
-        #     f"dt: {dt:.4f}\n"
-        #     f"p: {p:.4f}\n"
-        #     f"i: {i:.4f}\n"
-        #     f"d: {d:.4f}\n"
-        #     f"a: {self.acceleration:.4f}\n"
-        #     f"v: {self.velocity:.4f}\n"
-        #     f"position: {self.position:.0f}\n"
-        #     f"goal: {self.goal:.0f}\n"
-        #     f"distance: {self.distance:.0f}\n"
-        #     f"delay: {step_delay:.4f}, "
-        #     f"out of: {ControlledStepper.max_delay}"
-        # )
+        logger.debug(
+            f"{(UP+CLR)*12}"
+            f"{'-'*40}\n"
+            f"dt: {dt:.4f}\n"
+            f"p: {p:.4f}\n"
+            f"i: {i:.4f}\n"
+            f"d: {d:.4f}\n"
+            f"a: {self.acceleration:.4f}\n"
+            f"v: {self.velocity:.4f}\n"
+            f"position: {self.position:.0f}\n"
+            f"goal: {self.goal:.0f}\n"
+            f"distance: {self.distance:.0f}\n"
+            f"delay: {step_delay:.4f}, "
+            f"out of: {ControlledStepper.max_delay}"
+        )
 
-        logger.debug(f"{UP+CLR}Euler: {self.sensor.euler}")
+        # logger.debug(f"{UP+CLR}Euler: {self.sensor.euler}")
 
         # do a step with that delay
         if step_delay < ControlledStepper.max_delay:
