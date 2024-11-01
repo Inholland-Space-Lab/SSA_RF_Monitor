@@ -209,13 +209,10 @@ class ControlledStepper(Stepper):
 
         (yaw, roll, pitch) = self.sensor.euler
         position = yaw / 360 * self.steps_per_rev
-        distance = self.goal - position
+        distance = (self.goal - position) % self.steps_per_rev
         if distance > self.steps_per_rev / 2:
-            return self.steps_per_rev - distance
-        elif distance < -self.steps_per_rev / 2:
-            return distance - self.steps_per_rev
-        else:
-            return distance
+            distance -= self.steps_per_rev
+        return distance
 
     def __init__(self, step_pin, dir_pin, enable_pin,
                  resolution=3200, gear_ratio=None,
