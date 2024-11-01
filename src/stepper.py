@@ -216,10 +216,10 @@ class ControlledStepper(Stepper):
             return self.steps_per_rev - distance
 
     def __init__(self, step_pin, dir_pin, enable_pin,
-                 resolution=None, gear_ratio=None,
+                 resolution=3200, gear_ratio=None,
                  max_speed=10000, max_acceleration=1000,
                  sensor=None):
-        super().__init__(step_pin, dir_pin, enable_pin)
+        super().__init__(step_pin, dir_pin, enable_pin, resolution)
         self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
         self.sensor = sensor

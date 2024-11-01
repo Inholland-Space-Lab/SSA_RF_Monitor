@@ -35,10 +35,9 @@ class Dish:
         time.sleep(1)
 
         Dish.azimuth_motor = ControlledStepper(
-            step_pin=27, dir_pin=4, enable_pin=22, sensor=Dish.sensor)
+            step_pin=27, dir_pin=4, enable_pin=22, resolution=400, sensor=Dish.sensor)
         Dish.elevation_motor = Stepper(
             step_pin=24, dir_pin=18, enable_pin=23)
-        Dish.azimuth_motor.resolution = 400
 
     @staticmethod
     def setup_sensors():
