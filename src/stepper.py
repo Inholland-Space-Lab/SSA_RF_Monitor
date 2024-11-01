@@ -281,6 +281,7 @@ class ControlledStepper(Stepper):
             step_delay = min(ControlledStepper.max_delay,
                              abs(1 / self.velocity))
         (p, i, d) = self.pid.components
+        (yaw, roll, pitch) = self.sensor.euler
         logger.debug(
             f"{(UP+CLR)*12}"
             f"{'-'*40}\n"
@@ -290,7 +291,7 @@ class ControlledStepper(Stepper):
             f"d: {d:.4f}\n"
             f"a: {self.acceleration:.4f}\n"
             f"v: {self.velocity:.4f}\n"
-            f"position: {self.position:.0f}\n"
+            f"position: {yaw:.0f}\n"
             f"goal: {self.goal:.0f}\n"
             f"distance: {self.distance:.0f}\n"
             f"delay: {step_delay:.4f}, "
