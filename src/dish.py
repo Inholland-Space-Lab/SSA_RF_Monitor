@@ -32,6 +32,7 @@ class Dish:
         logger.info("starting dish")
 
         Dish.setup_sensors()
+        time.sleep(1)
 
         Dish.azimuth_motor = ControlledStepper(
             step_pin=27, dir_pin=4, enable_pin=22, sensor=Dish.sensor)
