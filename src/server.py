@@ -73,7 +73,7 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             yaw, roll, pitch = Dish.sensor.euler
             data = {
                 "azimuth": yaw,
-                "elevation": pitch
+                "elevation": roll
             }
             # Convert the data to a JSON string
             response_data = json.dumps(data)
