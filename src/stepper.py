@@ -195,6 +195,7 @@ class ControlledStepper(Stepper):
     i = 0
     d = 0.001
     sensor: BNO055_I2C
+    position_callback: any
 
     pid: PID
     max_acceleration: float  # steps per second^2
@@ -205,10 +206,14 @@ class ControlledStepper(Stepper):
     distance_sum: float  # steps
 
     @property
+    def position(self):
+        return self.position_callback()
+
+    @property
     def distance(self) -> int:
 
         (yaw, roll, pitch) = self.sensor.euler
-        position = yaw / 360 * self.steps_per_rev
+        position = self.position / 360 * self.steps_per_rev
         distance = (self.goal - position) % self.steps_per_rev
         if distance > self.steps_per_rev / 2:
             distance -= self.steps_per_rev
@@ -217,10 +222,12 @@ class ControlledStepper(Stepper):
     def __init__(self, step_pin, dir_pin, enable_pin,
                  resolution=3200, gear_ratio=None,
                  max_speed=10000, max_acceleration=1000,
-                 sensor=None):
+                 sensor=None,
+                 position_callback=None):
         super().__init__(step_pin, dir_pin, enable_pin, resolution)
         self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
+        self.position_callback = position_callback
         self.sensor = sensor
         self.velocity = 0
         self.goal = 0
@@ -230,8 +237,8 @@ class ControlledStepper(Stepper):
                        output_limits=(-max_acceleration, max_acceleration))
         logger.debug("init succesful")
         logger.debug("\n" * 8)
-        (yaw, roll, pitch) = self.sensor.euler
-        self.move_to_sync(degrees=yaw)
+        # (yaw, roll, pitch) = self.sensor.euler
+        # self.move_to_sync(degrees=yaw)
         self.calc_steps()
 
     def home(self):
