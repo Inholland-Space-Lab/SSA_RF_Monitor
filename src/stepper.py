@@ -299,12 +299,13 @@ class ControlledStepper(Stepper):
             f"out of: {ControlledStepper.max_delay}"
         )
 
-        # logger.debug(f"{UP+CLR}Euler: {self.sensor.euler}")
+        # DEBUG:
+        step_delay = ControlledStepper.max_delay
 
         # do a step with that delay
         if step_delay < ControlledStepper.max_delay:
             direction = 1 if self.velocity > 0 else -1
-            # self.do_steps_sync(direction, step_delay/2, True)
+            self.do_steps_sync(direction, step_delay/2, True)
         else:
             # for low velocities step delay can get very high,
             # do no step and calculate again after max_delay
