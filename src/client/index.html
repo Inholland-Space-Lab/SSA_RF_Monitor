@@ -73,6 +73,7 @@
     <div class="container">
         <h1>Satellite Dish Control</h1>
 
+        <!-- Azimuth and Elevation Controls -->
         <div class="control-panel">
             <label for="azimuth">Set Azimuth (Horizontal Angle):</label>
             <input type="number" id="azimuth" name="azimuth" min="0" max="360"
@@ -85,29 +86,41 @@
             <button onclick="updateDishPosition()">Move Dish</button>
             <button onclick="zeroDish()">Zero</button>
         </div>
+
+        <!-- PID Settings for Azimuth -->
         <div class="control-panel">
-            <label for="pid-p">P</label>
-            <input type="number" id="pid-p" name="pid-p" placeholder="Enter pid-p value (0-1)">
-
-            <label for="pid-i">I</label>
-            <input type="number" id="pid-i" name="pid-i" placeholder="Enter pid-i value (0-1)">
-
-            <label for="pid-d">D</label>
-            <input type="number" id="pid-d" name="pid-d" placeholder="Enter pid-d value (0-1)">
-
-            <label for="pid-time">Update Time</label>
-            <input type="number" id="pid-time" name="pid-time" min="0" max="10"
-                placeholder="Enter pid-time value (0-1)">
-
-            <button onclick="updatePidValues()">Set Values</button>
+            <h2>Azimuth PID Settings</h2>
+            <label for="pid-p-azimuth">P</label>
+            <input type="number" id="pid-p-azimuth" placeholder="Enter P value (0-1)">
+            <label for="pid-i-azimuth">I</label>
+            <input type="number" id="pid-i-azimuth" placeholder="Enter I value (0-1)">
+            <label for="pid-d-azimuth">D</label>
+            <input type="number" id="pid-d-azimuth" placeholder="Enter D value (0-1)">
+            <button onclick="updatePidValues('azimuth')">Set Azimuth PID</button>
         </div>
 
+        <!-- PID Settings for Elevation -->
+        <div class="control-panel">
+            <h2>Elevation PID Settings</h2>
+            <label for="pid-p-elevation">P</label>
+            <input type="number" id="pid-p-elevation" placeholder="Enter P value (0-1)">
+            <label for="pid-i-elevation">I</label>
+            <input type="number" id="pid-i-elevation" placeholder="Enter I value (0-1)">
+            <label for="pid-d-elevation">D</label>
+            <input type="number" id="pid-d-elevation" placeholder="Enter D value (0-1)">
+            <button onclick="updatePidValues('elevation')">Set Elevation PID</button>
+        </div>
+
+        <!-- Current and Goal Positions -->
         <div class="current-position">
-            <h2>Current Dish Position</h2>
-            <p>Azimuth: <span id="current-azimuth">N/A</span>°</p>
-            <p>Elevation: <span id="current-elevation">N/A</span>°</p>
+            <h2>Dish Position</h2>
+            <p>Goal Azimuth: <span id="goal-azimuth">N/A</span>°</p>
+            <p>Goal Elevation: <span id="goal-elevation">N/A</span>°</p>
+            <p>Current Azimuth: <span id="current-azimuth">N/A</span>°</p>
+            <p>Current Elevation: <span id="current-elevation">N/A</span>°</p>
         </div>
 
+        <!-- Extra Data -->
         <div class="extra-data">
             <h2>Additional Data</h2>
             <p>Signal Strength: <span id="signal-strength">N/A</span></p>

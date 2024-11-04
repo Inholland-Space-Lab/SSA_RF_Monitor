@@ -69,6 +69,23 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
         elif self.path == '/index.js':
             self.sendFile('src/client/index.js')
 
+        elif self.path == "/api/get-current-position":
+            yaw, pitch, roll = Dish.sensor.euler
+            data = {
+                "azimuth": yaw,
+                "elevation": roll
+            }
+            # Convert the data to a JSON string
+            response_data = json.dumps(data)
+
+            # Set the response headers and status
+            self.send_response(server.HTTPStatus.OK)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+
+            # Write the JSON response back to the client
+            self.wfile.write(response_data.encode("utf-8"))
+
         else:
             # An unknown request was sent
             server.SimpleHTTPRequestHandler.do_GET(self)

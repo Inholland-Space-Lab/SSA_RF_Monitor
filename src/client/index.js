@@ -1,72 +1,64 @@
-
-
+// Function to move the dish to the target position
 function updateDishPosition() {
     const azimuth = document.getElementById('azimuth').value;
     const elevation = document.getElementById('elevation').value;
 
-    // Placeholder: send azimuth and elevation data to server or backend
-    console.log(`Setting Azimuth: ${azimuth}°, Elevation: ${elevation}°`);
+    // Update goal position display
+    document.getElementById('goal-azimuth').textContent = azimuth;
+    document.getElementById('goal-elevation').textContent = elevation;
 
-    // Simulate updating the current position
-    document.getElementById('current-azimuth').textContent = azimuth;
-    document.getElementById('current-elevation').textContent = elevation;
-
-    // Update additional data for example (like signal strength and status)
-    document.getElementById('signal-strength').textContent = Math.floor(Math.random() * 100) + '%'; // Simulated signal strength
-    document.getElementById('status').textContent = 'Moving...';
-
-    setTimeout(() => {
-        document.getElementById('status').textContent = 'Position Reached';
-    }, 2000); // Simulate a delay for movement
-
-    fetch(`${window.location.origin}/api/set-target`,
-        {
-            method: "POST",
-            body: JSON
-            .stringify
-            ({
-              azimuth: azimuth,
-              elevation: elevation,
-            }),
-            headers: {
-              "Content-type": "application/json",
-            },
-          })
-}
-
-function zeroDish() {
-
-    fetch(`${window.location.origin}/api/zero`,
-        {
-            method: "POST",
-            body: "",
-            headers: {
-              "Content-type": "application/json",
-            },
-          })
-}
-
-function updatePidValues() {
-  const p = document.getElementById('pid-p').value || 0;
-  const i = document.getElementById('pid-i').value || 0;
-  const d = document.getElementById('pid-d').value || 0;
-  const time = document.getElementById('pid-time').value || 0;
-// Placeholder: send azimuth and elevation data to server or backend
-  console.log(`Setting pid ${p}, ${i}, ${d}, ${time}`);
-
-  fetch(`${window.location.origin}/api/set-pid`,
-      {
-          method: "POST",
-          body: JSON
-          .stringify
-          ({
-            p: p ,
-            i: i,
-            d: d,
-            time: time,
-          }),
-          headers: {
+    // Send azimuth and elevation to the server
+    fetch(`${window.location.origin}/api/set-target`, {
+        method: "POST",
+        body: JSON.stringify({ azimuth: azimuth, elevation: elevation }),
+        headers: {
             "Content-type": "application/json",
-          },
-        })
+        },
+    });
+
+    // Update status and signal strength for demonstration
+    document.getElementById('status').textContent = 'Moving...';
+    document.getElementById('signal-strength').textContent = Math.floor(Math.random() * 100) + '%';
 }
+
+// Function to zero the dish
+function zeroDish() {
+    fetch(`${window.location.origin}/api/zero`, {
+        method: "POST",
+        body: "",
+        headers: {
+            "Content-type": "application/json",
+        },
+    });
+}
+
+// Function to update PID values
+function updatePidValues(type) {
+    const p = document.getElementById(`pid-p-${type}`).value || 0;
+    const i = document.getElementById(`pid-i-${type}`).value || 0;
+    const d = document.getElementById(`pid-d-${type}`).value || 0;
+
+    // Send PID values to the server for either azimuth or elevation
+    fetch(`${window.location.origin}/api/set-pid`, {
+        method: "POST",
+        body: JSON.stringify({ type: type, p: p, i: i, d: d }),
+        headers: {
+            "Content-type": "application/json",
+        },
+    });
+}
+
+// Function to periodically fetch the current dish position
+function fetchCurrentPosition() {
+    fetch(`${window.location.origin}/api/get-current-position`)
+        .then(response => response.json())
+        .then(data => {
+            // Update the current position values with data from the server
+            document.getElementById('current-azimuth').textContent = data.azimuth;
+            document.getElementById('current-elevation').textContent = data.elevation;
+        })
+        .catch(error => console.error("Error fetching current position:", error));
+}
+
+// Start polling the server for the current position every 0.5 seconds
+setInterval(fetchCurrentPosition, 500);
