@@ -52,6 +52,7 @@ class Dish:
             step_pin=24,
             dir_pin=18,
             enable_pin=23,
+            resolution=400,
             sensor=Dish.sensor,
             position_callback=elevation
         )
