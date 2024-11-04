@@ -113,7 +113,7 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             p = float(data.get('p'))
             i = float(data.get('i'))
             d = float(data.get('d'))
-            Dish.tune_pid(p, i, d)
+            Dish.tune_pid(p, i, d, True)
             ControlledStepper.max_delay = float(data.get('time'))
 
             logger.info(f"Received new pid: {p}, {i}, "
