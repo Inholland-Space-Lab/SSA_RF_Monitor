@@ -51,14 +51,23 @@ function updatePidValues(type) {
 // Function to periodically fetch the current dish position
 function fetchCurrentPosition() {
     fetch(`${window.location.origin}/api/get-current-position`)
-        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
         .then(data => {
-            // Update the current position values with data from the server
+            console.log(data)
+            // Assuming `data` contains `{ azimuth: value, elevation: value }`
             document.getElementById('current-azimuth').textContent = data.azimuth;
             document.getElementById('current-elevation').textContent = data.elevation;
         })
-        .catch(error => console.error("Error fetching current position:", error));
+        .catch(error => {
+            console.error("Error fetching current position:", error);
+        });
 }
 
 // Start polling the server for the current position every 0.5 seconds
-setInterval(fetchCurrentPosition, 500);
+setInterval(fetchCurrentPosition, 5000);
