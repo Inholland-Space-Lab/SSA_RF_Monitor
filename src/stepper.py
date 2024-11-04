@@ -206,14 +206,14 @@ class ControlledStepper(Stepper):
     distance_sum: float  # steps
 
     @property
-    def position(self):
+    def sensor_position(self):
         return self.position_callback()
 
     @property
     def distance(self) -> int:
 
         (yaw, roll, pitch) = self.sensor.euler
-        position = self.position / 360 * self.steps_per_rev
+        position = self.sensor_position / 360 * self.steps_per_rev
         distance = (self.goal - position) % self.steps_per_rev
         if distance > self.steps_per_rev / 2:
             distance -= self.steps_per_rev
