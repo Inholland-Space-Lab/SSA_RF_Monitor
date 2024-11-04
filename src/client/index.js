@@ -70,4 +70,4 @@ function fetchCurrentPosition() {
 }
 
 // Start polling the server for the current position every 0.5 seconds
-setInterval(fetchCurrentPosition, 5000);
+setInterval(fetchCurrentPosition, 500);
