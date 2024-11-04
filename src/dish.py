@@ -38,7 +38,7 @@ class Dish:
             return Dish.sensor.euler[0]
 
         def elevation():
-            return Dish.sensor.euler[2]
+            return Dish.sensor.euler[1]
 
         Dish.azimuth_motor = ControlledStepper(
             step_pin=27,

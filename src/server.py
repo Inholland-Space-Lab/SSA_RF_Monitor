@@ -70,10 +70,10 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             self.sendFile('src/client/index.js')
 
         elif self.path == "/api/get-current-position":
-            yaw, pitch, roll = Dish.sensor.euler
+            yaw, roll, pitch = Dish.sensor.euler
             data = {
-                "azimuth": Dish.sensor.euler[0],
-                "elevation": Dish.sensor.euler[2]
+                "azimuth": yaw,
+                "elevation": pitch
             }
             # Convert the data to a JSON string
             response_data = json.dumps(data)
