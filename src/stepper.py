@@ -307,7 +307,7 @@ class ControlledStepper(Stepper):
         )
 
         # DEBUG:
-        step_delay = ControlledStepper.max_delay
+        # step_delay = ControlledStepper.max_delay
 
         # do a step with that delay
         if step_delay < ControlledStepper.max_delay:
