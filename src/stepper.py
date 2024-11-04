@@ -282,7 +282,7 @@ class ControlledStepper(Stepper):
         (p, i, d) = self.pid.components
         (yaw, roll, pitch) = self.sensor.euler
         logger.debug(
-            f"{(UP+CLR)*12}"
+            f"{(UP+CLR)*14}"
             f"{'-'*40}\n"
             f"dt: {dt:.4f}\n"
             f"p: {p:.4f}\n"
@@ -304,7 +304,7 @@ class ControlledStepper(Stepper):
         # do a step with that delay
         if step_delay < ControlledStepper.max_delay:
             direction = 1 if self.velocity > 0 else -1
-            self.do_steps_sync(direction, step_delay/2, True)
+            # self.do_steps_sync(direction, step_delay/2, True)
         else:
             # for low velocities step delay can get very high,
             # do no step and calculate again after max_delay
