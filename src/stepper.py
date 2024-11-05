@@ -109,11 +109,11 @@ class Stepper():
 
         if velocity == 0:
             self.pwm.stop()  # Stop the motor
-        elif velocity > 0:
+        elif velocity > 1:
             self.pwm.start(50)
             self.pwm.change_frequency(velocity)
             GPIO.output(self.step_pin, GPIO.HIGH)
-        elif velocity < 0:
+        elif velocity < -1:
             self.pwm.start(50)
             self.pwm.change_frequency(-velocity)
             GPIO.output(self.dir_pin, GPIO.LOW)
