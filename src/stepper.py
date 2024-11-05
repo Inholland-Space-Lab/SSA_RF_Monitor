@@ -104,16 +104,20 @@ class Stepper():
             return
         logger.debug(f"Setting pwm: {velocity}")
         if velocity == 0:
+            GPIO.output(self.enable_pin, GPIO.LOW)
             self.pwm.stop()  # Stop the motor
         elif velocity > 1:
+            GPIO.output(self.enable_pin, GPIO.HIGH)
             self.pwm.start(50)
             self.pwm.change_frequency(velocity)
             GPIO.output(self.step_pin, GPIO.HIGH)
         elif velocity < -1:
+            GPIO.output(self.enable_pin, GPIO.HIGH)
             self.pwm.start(50)
             self.pwm.change_frequency(-velocity)
             GPIO.output(self.dir_pin, GPIO.LOW)
         else:
+            GPIO.output(self.enable_pin, GPIO.LOW)
             self.pwm.stop()  # Stop the motor
 
     def move_to_sync(self, degrees=None, radians=None):
