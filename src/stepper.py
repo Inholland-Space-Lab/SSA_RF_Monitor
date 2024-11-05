@@ -102,7 +102,7 @@ class Stepper():
         if self.pwm == None:
             logger.error("No pwm configured!")
             return
-
+        logger.debug(f"Setting pwm: {velocity}")
         if velocity == 0:
             self.pwm.stop()  # Stop the motor
         elif velocity > 1:
