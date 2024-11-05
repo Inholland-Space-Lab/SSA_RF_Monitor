@@ -218,10 +218,10 @@ class Stepper():
 
 class ControlledStepper(Stepper):
 
-    max_delay = 0.1  # seconds
-    p = 0.000005
+    max_delay = 0.001  # seconds
+    p = 0
     i = 0
-    d = 0.001
+    d = 0
     sensor: BNO055_I2C
     position_callback: any
 
@@ -249,7 +249,7 @@ class ControlledStepper(Stepper):
 
     def __init__(self, step_pin, dir_pin, enable_pin,
                  resolution=3200, gear_ratio=None,
-                 max_speed=10000, max_acceleration=1000,
+                 max_speed=100000, max_acceleration=2000,
                  sensor=None, pwm=None,
                  position_callback=None):
         super().__init__(step_pin, dir_pin, enable_pin, resolution, pwm=pwm)
