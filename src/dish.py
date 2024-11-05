@@ -95,5 +95,8 @@ class Dish:
     def stop():
         # stop each of the motors
         logger.info('stopping motors')
-        Dish.azimuth_motor.stop()
-        Dish.elevation_motor.stop()
+        try:
+            Dish.azimuth_motor.stop()
+            Dish.elevation_motor.stop()
+        except Exception as e:
+            logger.error(str(e))
