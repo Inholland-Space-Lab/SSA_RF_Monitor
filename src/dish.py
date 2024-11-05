@@ -45,7 +45,7 @@ class Dish:
             step_pin=27,
             dir_pin=4,
             enable_pin=22,
-            resolution=400,
+            # resolution=400,
             pwm=HardwarePWM(pwm_channel=2, hz=1, chip=2),
             sensor=Dish.sensor,
             position_callback=azimuth)
@@ -54,7 +54,7 @@ class Dish:
             step_pin=24,
             dir_pin=17,
             enable_pin=23,
-            resolution=400,
+            # resolution=400,
             pwm=HardwarePWM(pwm_channel=3, hz=1, chip=2),
             sensor=Dish.sensor,
             position_callback=elevation
