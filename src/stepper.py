@@ -8,14 +8,7 @@ from adafruit_bno055 import BNO055_I2C
 from simple_pid import PID
 from config import Config
 from RPi import GPIO
-import pigpio
-
-
-# Initialize GPIO
-pi = pigpio.pi()
-if not pi.connected:
-    raise Exception("pigpio not connected. Is the daemon running?")
-
+from rpi_hardware_pwm import HardwarePWM
 
 logger = logging.getLogger(__name__)
 
@@ -51,11 +44,13 @@ class Stepper():
     gear_ratio: float
     resolution: int
 
+    pwm: HardwarePWM
+
     @property
     def steps_per_rev(self):
         return self.resolution * self.gear_ratio
 
-    def __init__(self, step_pin, dir_pin, enable_pin, resolution=3200, gear_ratio=(19+(38/187))):
+    def __init__(self, step_pin, dir_pin, enable_pin, resolution=3200, gear_ratio=(19+(38/187)), pwm=None):
         # Define Pins
         logger.info("Creating Stepper")
         self.step_pin = step_pin
@@ -64,6 +59,7 @@ class Stepper():
         self.gear_ratio = gear_ratio
         self.resolution = resolution
         self.position = 0
+        self.pwm = pwm
 
         # Setup the thread and queue that will run the motor
         self.job_queue = queue.Queue()
@@ -107,16 +103,22 @@ class Stepper():
 
     def set_speed(self, velocity):
         """Set the step pin to pulse at the specified frequency."""
+        if self.pwm == None:
+            logger.error("No pwm configured!")
+            return
+
         if velocity == 0:
-            pi.hardware_PWM(self.step_pin, 0, 0)  # Stop the motor
+            self.pwm.stop()  # Stop the motor
         elif velocity > 0:
-            pi.hardware_PWM(self.step_pin, velocity, 500000)  # 50% duty cycle
-            pi.write(self.dir_pin, True)
+            self.pwm.start(50)
+            self.pwm.change_frequency(velocity)
+            GPIO.output(self.step_pin, GPIO.HIGH)
         elif velocity < 0:
-            pi.hardware_PWM(self.step_pin, -velocity, 500000)  # 50% duty cycle
-            pi.write(self.dir_pin, False)
+            self.pwm.start(50)
+            self.pwm.change_frequency(-velocity)
+            GPIO.output(self.dir_pin, GPIO.LOW)
         else:
-            pi.hardware_PWM(self.step_pin, 0, 0)  # Stop the motor
+            self.pwm.stop()  # Stop the motor
 
     def move_to_sync(self, degrees=None, radians=None):
         target_rev = 0
@@ -247,9 +249,9 @@ class ControlledStepper(Stepper):
     def __init__(self, step_pin, dir_pin, enable_pin,
                  resolution=3200, gear_ratio=None,
                  max_speed=10000, max_acceleration=1000,
-                 sensor=None,
+                 sensor=None, pwm=None,
                  position_callback=None):
-        super().__init__(step_pin, dir_pin, enable_pin, resolution)
+        super().__init__(step_pin, dir_pin, enable_pin, resolution, pwm=pwm)
         self.max_acceleration = max_acceleration
         self.max_velocity = max_speed
         self.position_callback = position_callback
