@@ -37,11 +37,12 @@ function updatePidValues(type) {
     const p = document.getElementById(`pid-p-${type}`).value || 0;
     const i = document.getElementById(`pid-i-${type}`).value || 0;
     const d = document.getElementById(`pid-d-${type}`).value || 0;
+    const time = document.getElementById(`pid-time`).value || 1;
 
     // Send PID values to the server for either azimuth or elevation
     fetch(`${window.location.origin}/api/set-pid`, {
         method: "POST",
-        body: JSON.stringify({ type: type, p: p, i: i, d: d }),
+        body: JSON.stringify({ type: type, p: p, i: i, d: d, time: time}),
         headers: {
             "Content-type": "application/json",
         },

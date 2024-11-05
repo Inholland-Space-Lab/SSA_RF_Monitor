@@ -60,8 +60,8 @@ class Dish:
             position_callback=elevation
         )
 
-        Dish.azimuth_motor.tune(-1, 0, -2.5)
-        Dish.elevation_motor.tune(1, 0, 2.5)
+        # Dish.azimuth_motor.tune(-1, 0, -2.5)
+        # Dish.elevation_motor.tune(1, 0, 2.5)
 
     @staticmethod
     def setup_sensors():
@@ -95,5 +95,5 @@ class Dish:
     def stop():
         # stop each of the motors
         logger.info('stopping motors')
-        # for motor in Belt.motors:
-        #     motor.Stop()
+        Dish.azimuth_motor.stop()
+        Dish.elevation_motor.stop()

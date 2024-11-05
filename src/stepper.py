@@ -93,6 +93,7 @@ class Stepper():
 
     def stop(self):
         # Stop the worker by adding a None job to signal shutdown
+        self.pwm.stop()
         self.job_queue.put(None)
         self.worker_thread.join()  # Wait for the thread to finish
         GPIO.output(self.enable_pin, GPIO.LOW)
@@ -217,7 +218,7 @@ class Stepper():
 
 class ControlledStepper(Stepper):
 
-    max_delay = 1.0  # seconds
+    max_delay = 0.1  # seconds
     p = 0.000005
     i = 0
     d = 0.001
