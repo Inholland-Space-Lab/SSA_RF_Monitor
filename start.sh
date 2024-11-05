@@ -39,7 +39,7 @@ stop_program() {
     if is_running; then
         echo "$PROGRAM_SCRIPT is running, stopping it..."
         pkill -f "$PROGRAM_SCRIPT"
-        sleep 2  # Give time for the process to terminate
+        sleep 5  # Give time for the process to terminate
         echo "$PROGRAM_SCRIPT stopped."
     else
         echo "$PROGRAM_SCRIPT is not running."
