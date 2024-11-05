@@ -97,7 +97,7 @@ class Stepper():
         self.worker_thread.join()  # Wait for the thread to finish
         GPIO.output(self.enable_pin, GPIO.LOW)
 
-    def set_speed(self, velocity):
+    def set_speed(self, velocity: float):
         """Set the step pin to pulse at the specified frequency."""
         if self.pwm == None:
             logger.error("No pwm configured!")

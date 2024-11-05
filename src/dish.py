@@ -52,7 +52,7 @@ class Dish:
 
         Dish.elevation_motor = ControlledStepper(
             step_pin=24,
-            dir_pin=18,
+            dir_pin=17,
             enable_pin=23,
             resolution=400,
             pwm=HardwarePWM(pwm_channel=1, hz=1, chip=2),
