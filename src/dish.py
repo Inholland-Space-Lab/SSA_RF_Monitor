@@ -57,6 +57,9 @@ class Dish:
             position_callback=elevation
         )
 
+        Dish.azimuth_motor.tune(-1, 0, -2.5)
+        Dish.elevation_motor.tune(1, 0, 2.5)
+
     @staticmethod
     def setup_sensors():
         i2c = board.I2C()

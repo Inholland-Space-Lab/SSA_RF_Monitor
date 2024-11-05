@@ -233,7 +233,7 @@ class ControlledStepper(Stepper):
         self.goal = 0
         self.distance_sum = 0
         self._last_time = 0
-        self.pid = PID(-1, 0, -2.5, sample_time=None,
+        self.pid = PID(0, 0, 0, sample_time=None,
                        output_limits=(-max_acceleration, max_acceleration))
         logger.debug("init succesful")
         logger.debug("\n" * 8)

@@ -4,8 +4,8 @@ function updateDishPosition() {
     const elevation = document.getElementById('elevation').value;
 
     // Update goal position display
-    document.getElementById('goal-azimuth').textContent = azimuth;
-    document.getElementById('goal-elevation').textContent = elevation;
+    document.getElementById('goal-azimuth').textContent = azimuth % 360;
+    document.getElementById('goal-elevation').textContent = elevation % 360;
 
     // Send azimuth and elevation to the server
     fetch(`${window.location.origin}/api/set-target`, {
