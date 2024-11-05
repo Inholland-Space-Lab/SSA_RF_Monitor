@@ -71,10 +71,6 @@ class Stepper():
         GPIO.setup([step_pin, dir_pin, enable_pin], GPIO.OUT)
         self.home()
 
-        # Set the GPIO modes
-        pi.set_mode(step_pin, pigpio.OUTPUT)
-        pi.set_mode(dir_pin, pigpio.OUTPUT)
-
     def _worker(self):
         # Continuously check for jobs in the queue
         while True:
