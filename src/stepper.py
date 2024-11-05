@@ -93,9 +93,10 @@ class Stepper():
 
     def stop(self):
         # Stop the worker by adding a None job to signal shutdown
-        self.pwm.stop()
         # self.job_queue.put(None)
         # self.worker_thread.join()  # Wait for the thread to finish
+        self.pwm.change_frequency(1)
+        self.pwm.stop()
         GPIO.output(self.enable_pin, GPIO.LOW)
 
     def set_speed(self, velocity: float):
@@ -106,20 +107,16 @@ class Stepper():
         logger.debug(f"Setting pwm: {velocity}")
         GPIO.output(self.enable_pin, GPIO.HIGH)
         if velocity == 0:
-            # GPIO.output(self.enable_pin, GPIO.LOW)
             self.pwm.stop()  # Stop the motor
         elif velocity > 1:
-            # GPIO.output(self.enable_pin, GPIO.HIGH)
+            GPIO.output(self.dir_pin, GPIO.LOW)
             self.pwm.start(50)
             self.pwm.change_frequency(velocity)
-            GPIO.output(self.dir_pin, GPIO.LOW)
         elif velocity < -1:
-            # GPIO.output(self.enable_pin, GPIO.HIGH)
+            GPIO.output(self.dir_pin, GPIO.HIGH)
             self.pwm.start(50)
             self.pwm.change_frequency(-velocity)
-            GPIO.output(self.dir_pin, GPIO.HIGH)
         else:
-            # GPIO.output(self.enable_pin, GPIO.LOW)
             self.pwm.stop()  # Stop the motor
 
     def move_to_sync(self, degrees=None, radians=None):
@@ -137,24 +134,12 @@ class Stepper():
                      f"Taking {steps} steps")
 
         self.do_steps_sync(steps)
-        # if steps > 0:
-        #     self.do_steps_sync(
-        #         Direction.counter_clockwise, steps, 2)
-        # else:
-        #     self.do_steps_sync(
-        #         Direction.clockwise, -steps, 2)
 
     def do_steps_sync(self, *args):
-        # logger.debug("do_steps_sync")
         self.job_queue.put(args)
 
     def do_steps(self, step_count, delay=0.0001, *args):
-        # direction
 
-        # if direction:
-        #     self.position += step_count
-        # else:
-        #     self.position -= step_count
         logger.debug(f"doing {step_count} steps")
         GPIO.output(self.enable_pin, GPIO.HIGH)
         self.position += step_count
@@ -162,8 +147,6 @@ class Stepper():
             GPIO.output(self.dir_pin, GPIO.LOW)
         else:
             GPIO.output(self.dir_pin, GPIO.HIGH)
-
-        # delay_s = delay_ms/1000
 
         for i in range(abs(step_count)):
             time.sleep(delay)
@@ -294,10 +277,6 @@ class ControlledStepper(Stepper):
         self.goal = target_rev * self.steps_per_rev
 
     def calc_steps(self):
-        # get position
-        # (yaw, roll, pitch) = self.sensor.euler
-        # self.move_to_sync(degrees=yaw)
-
         # update time
         now = time.monotonic()
         dt = now - self._last_time
@@ -309,12 +288,7 @@ class ControlledStepper(Stepper):
         self.velocity += self.acceleration * dt
         self.velocity = max(-self.max_velocity,
                             min(self.max_velocity, self.velocity))
-
-        # get delay between steps for this velocity
-        step_delay = ControlledStepper.max_delay
-        if not (self.velocity == 0):
-            step_delay = min(ControlledStepper.max_delay,
-                             abs(1 / self.velocity))
+        self.set_speed(self.velocity)
 
         (p, i, d) = self.pid.components
         (yaw, roll, pitch) = self.sensor.euler
@@ -338,27 +312,14 @@ class ControlledStepper(Stepper):
             f"mag: {mag:.0f}\n"
             f"goal: {self.goal:.0f}\n"
             f"distance: {self.distance:.0f}\n"
-            f"delay: {step_delay:.4f}, "
             f"out of: {ControlledStepper.max_delay}"
         )
-        self.set_speed(self.velocity)
-        # DEBUG:
-        step_delay = ControlledStepper.max_delay
 
-        # do a step with that delay
-        if step_delay < ControlledStepper.max_delay:
-            direction = 1 if self.velocity > 0 else -1
-            self.do_steps_sync(direction, step_delay/2, True)
-        else:
-            # for low velocities step delay can get very high,
-            # do no step and calculate again after max_delay
-            # to avoid stalling the steppers
-            timer = threading.Timer(
-                ControlledStepper.max_delay,
-                self.calc_steps)
-            timer.daemon = True  # Set the timer thread as a daemon thread
-            timer.start()
-            # logger.debug("Skipping steps")
+        timer = threading.Timer(
+            ControlledStepper.max_delay,
+            self.calc_steps)
+        timer.daemon = True  # Makes sure the timer stops when the process crashes
+        timer.start()
 
     def on_task_done(self, *args):
         do_pid = args[2]
