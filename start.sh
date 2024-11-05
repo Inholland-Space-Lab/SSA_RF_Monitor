@@ -20,6 +20,7 @@ python -m venv --system-site-packages ./.venv
 ./.venv/bin/pip install adafruit-circuitpython-register
 ./.venv/bin/pip install adafruit-circuitpython-busdevice
 ./.venv/bin/pip install adafruit-circuitpython-bno055
+./.venv/bin/pip install pigpio
 
 # List installed packages
 ./.venv/bin/pip list

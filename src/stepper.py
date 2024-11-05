@@ -8,6 +8,14 @@ from adafruit_bno055 import BNO055_I2C
 from simple_pid import PID
 from config import Config
 from RPi import GPIO
+import pigpio
+
+
+# Initialize GPIO
+pi = pigpio.pi()
+if not pi.connected:
+    raise Exception("pigpio not connected. Is the daemon running?")
+
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +75,10 @@ class Stepper():
         GPIO.setup([step_pin, dir_pin, enable_pin], GPIO.OUT)
         self.home()
 
+        # Set the GPIO modes
+        pi.set_mode(step_pin, pigpio.OUTPUT)
+        pi.set_mode(dir_pin, pigpio.OUTPUT)
+
     def _worker(self):
         # Continuously check for jobs in the queue
         while True:
@@ -92,6 +104,19 @@ class Stepper():
         self.job_queue.put(None)
         self.worker_thread.join()  # Wait for the thread to finish
         GPIO.output(self.enable_pin, GPIO.LOW)
+
+    def set_speed(self, velocity):
+        """Set the step pin to pulse at the specified frequency."""
+        if velocity == 0:
+            pi.hardware_PWM(self.step_pin, 0, 0)  # Stop the motor
+        elif velocity > 0:
+            pi.hardware_PWM(self.step_pin, velocity, 500000)  # 50% duty cycle
+            pi.write(self.dir_pin, True)
+        elif velocity < 0:
+            pi.hardware_PWM(self.step_pin, -velocity, 500000)  # 50% duty cycle
+            pi.write(self.dir_pin, False)
+        else:
+            pi.hardware_PWM(self.step_pin, 0, 0)  # Stop the motor
 
     def move_to_sync(self, degrees=None, radians=None):
         target_rev = 0
@@ -312,9 +337,9 @@ class ControlledStepper(Stepper):
             f"delay: {step_delay:.4f}, "
             f"out of: {ControlledStepper.max_delay}"
         )
-
+        self.set_speed(self.velocity)
         # DEBUG:
-        # step_delay = ControlledStepper.max_delay
+        step_delay = ControlledStepper.max_delay
 
         # do a step with that delay
         if step_delay < ControlledStepper.max_delay:
@@ -329,7 +354,7 @@ class ControlledStepper(Stepper):
                 self.calc_steps)
             timer.daemon = True  # Set the timer thread as a daemon thread
             timer.start()
-            logger.debug("Skipping steps")
+            # logger.debug("Skipping steps")
 
     def on_task_done(self, *args):
         do_pid = args[2]
