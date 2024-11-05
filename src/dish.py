@@ -61,7 +61,7 @@ class Dish:
         )
 
         Dish.azimuth_motor.tune(-1, 0, -2.5)
-        Dish.elevation_motor.tune(1, 0, 2.5)
+        Dish.elevation_motor.tune(-1, 0, -2.5)
 
     @staticmethod
     def setup_sensors():
