@@ -42,7 +42,7 @@ class Dish:
             return Dish.sensor.euler[1]
 
         Dish.azimuth_motor = ControlledStepper(
-            step_pin=27,
+            step_pin=18,
             dir_pin=4,
             enable_pin=22,
             # resolution=400,
@@ -51,7 +51,7 @@ class Dish:
             position_callback=azimuth)
 
         Dish.elevation_motor = ControlledStepper(
-            step_pin=24,
+            step_pin=19,
             dir_pin=17,
             enable_pin=23,
             # resolution=400,
