@@ -97,6 +97,7 @@ class Stepper():
         self.resolution = resolution
         # self.position = 0
         self.pwm = pwm
+        self.do_pid = False
 
         # Setup the thread and queue that will run the motor
         self.job_queue = queue.Queue()
