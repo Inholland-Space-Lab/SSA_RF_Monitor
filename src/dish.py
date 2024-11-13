@@ -178,7 +178,7 @@ class Dish:
         )
 
         timer = threading.Timer(
-            Stepper.pid_delay,
+            1,
             Dish.log)
         timer.daemon = True  # Makes sure the timer stops when the process crashes
         timer.start()
