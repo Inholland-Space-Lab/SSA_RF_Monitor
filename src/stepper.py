@@ -78,6 +78,14 @@ class Stepper():
     def steps_per_rev(self):
         return self.resolution * self.gear_ratio
 
+    def __str__(self):
+        return \
+            f"position: {self.sensor_position}" + \
+            f"goal: {self.goal}\n" + \
+            f"pid enabled: {self.do_pid}\n" + \
+            f"pid tunings: {self.pid.tunings}\n" + \
+            ""
+
     def __init__(
         self,
         # step_pin,
@@ -231,7 +239,7 @@ class Stepper():
         self.goal = target_rev * self.steps_per_rev
 
     def start_pid(self):
-        self._last_time = 0
+        self._last_time = time.monotonic()
         self.do_pid = True
         self._calc_pid()
 
@@ -242,6 +250,7 @@ class Stepper():
     def _calc_pid(self):
         if not self.do_pid:
             return
+
         # update time
         now = time.monotonic()
         dt = now - self._last_time

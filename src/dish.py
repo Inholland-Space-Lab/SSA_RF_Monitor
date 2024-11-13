@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 from config import Config
 from RPi import GPIO
@@ -26,6 +27,7 @@ class Dish:
         Dish._setup_motors()
         # time.sleep(1)
         # Dish.calibrate()
+        Dish.log()
 
     @staticmethod
     def _setup_motors():
@@ -123,10 +125,13 @@ class Dish:
 
     @staticmethod
     def toggle_pid():
+        logger.debug("Toggle PID: ")
         if Dish.azimuth_motor.do_pid or Dish.elevation_motor.do_pid:
+            logger.debug("stop")
             Dish.azimuth_motor.stop_pid()
             Dish.elevation_motor.stop_pid()
         else:
+            logger.debug("start")
             Dish.azimuth_motor.start_pid()
             Dish.elevation_motor.start_pid()
 
@@ -165,4 +170,15 @@ class Dish:
 
     @staticmethod
     def log():
-        pass
+        logger.debug(
+            f"Azimuth:\n{Dish.azimuth_motor}"
+            f"Elevation:\n{Dish.elevation_motor}"
+            f"Sensor pos: {Dish.sensor.euler}\n"
+            f"Sensor calib: {Dish.sensor.calibrated}"
+        )
+
+        timer = threading.Timer(
+            Stepper.pid_delay,
+            Dish.log)
+        timer.daemon = True  # Makes sure the timer stops when the process crashes
+        timer.start()
