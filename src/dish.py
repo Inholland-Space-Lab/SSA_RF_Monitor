@@ -7,7 +7,7 @@ from adafruit_bno055 import BNO055_I2C
 import board
 from rpi_hardware_pwm import HardwarePWM
 
-from stepper import ControlledStepper, Direction, Stepper
+from stepper import Stepper
 
 
 logger = logging.getLogger(__name__)
