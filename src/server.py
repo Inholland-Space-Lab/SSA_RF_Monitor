@@ -115,6 +115,14 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             Dish.zero()
             self.redirectHome()
 
+        elif self.path == "/api/calibrate":
+            Dish.calibrate()
+            self.redirectHome()
+
+        elif self.path == "/api/toggle-pid":
+            Dish.toggle_pid()
+            self.redirectHome()
+
         elif self.path == "/api/set-pid":
 
             # Get the length of the data

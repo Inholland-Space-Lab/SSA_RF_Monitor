@@ -24,8 +24,8 @@ class Dish:
         Dish._setup_sensors()
         time.sleep(1)
         Dish._setup_motors()
-        time.sleep(1)
-        Dish.calibrate()
+        # time.sleep(1)
+        # Dish.calibrate()
 
     @staticmethod
     def _setup_motors():
@@ -104,6 +104,15 @@ class Dish:
         # TODO: wait till completed
         logger.debug("Accelerometer Calibrated!")
         logger.info(f"Calibration Complete: {Dish.sensor.calibration_status}")
+
+    @staticmethod
+    def toggle_pid():
+        if Dish.azimuth_motor.do_pid or Dish.elevation_motor.do_pid:
+            Dish.azimuth_motor.stop_pid()
+            Dish.elevation_motor.stop_pid()
+        else:
+            Dish.azimuth_motor.start_pid()
+            Dish.elevation_motor.start_pid()
 
     @staticmethod
     def set_target(azimuth, elevation):

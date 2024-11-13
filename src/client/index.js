@@ -49,6 +49,26 @@ function updatePidValues(type) {
     });
 }
 
+function togglePid() {
+    fetch(`${window.location.origin}/api/toggle-pid`, {
+        method: "POST",
+        body: "",
+        headers: {
+            "Content-type": "application/json",
+        },
+    });
+}
+
+function calibrate() {
+    fetch(`${window.location.origin}/api/calibrate`, {
+        method: "POST",
+        body: "",
+        headers: {
+            "Content-type": "application/json",
+        },
+    });
+}
+
 // Function to periodically fetch the current dish position
 function fetchCurrentPosition() {
     fetch(`${window.location.origin}/api/get-current-position`)
