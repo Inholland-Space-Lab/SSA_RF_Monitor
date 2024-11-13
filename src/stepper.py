@@ -119,6 +119,7 @@ class Stepper():
         self.max_velocity = 100000
         self.position_callback = position_callback
         # self.sensor = sensor
+        self.acceleration = 0
         self.velocity = 0
         self.goal = 0
         self.distance_sum = 0
