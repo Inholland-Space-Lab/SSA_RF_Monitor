@@ -60,7 +60,11 @@ class Stepper():
     @property
     def sensor_position(self):
         try:
-            return self.position_callback() | 0
+            pos = self.position_callback()
+            if pos:
+                return pos
+            else:
+                return 0
         except:
             logger.warning(f"position callback not implemented!")
             self.stop_pid()
