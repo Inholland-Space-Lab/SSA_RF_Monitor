@@ -157,7 +157,7 @@ class Stepper():
         self.pwm.change_frequency(1)
         self.pwm.stop()
         GPIO.output(self.enable_pin, GPIO.LOW)
-        GPIO.cleanup([self.enable_pin, self.dir_pin])
+        # GPIO.cleanup([self.enable_pin, self.dir_pin])
 
     def _set_speed(self, velocity: float):
         """Set the step pin to pulse at the specified frequency."""
