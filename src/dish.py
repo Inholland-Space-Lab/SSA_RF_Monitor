@@ -13,27 +13,23 @@ logger = logging.getLogger(__name__)
 
 
 class Dish:
-    # The belt contains two motors with different pins
-    # motors = list()
     azimuth_motor: Stepper
     elevation_motor: Stepper
     sensor: BNO055_I2C
 
-    # def configure():
-    #     # create each of the motors and set their microstep config
-    #     Belt.motors.append(DRV8825(dir_pin=13, step_pin=19,
-    #                                enable_pin=12, mode_pins=(16, 17, 20)))
-    #     for motor in Belt.motors:
-    #         motor.SetMicroStep('hardward', '1/4step')
-
     @staticmethod
     def start():
-        # start running the belt
-        # TODO: start the belt continuously instead of 200 steps
-        logger.info("starting dish")
+        logger.info("starting dish...")
 
-        Dish.setup_sensors()
+        Dish._setup_sensors()
         time.sleep(1)
+        Dish._setup_motors()
+        time.sleep(1)
+        Dish.calibrate()
+
+    @staticmethod
+    def _setup_motors():
+        logger.debug("setup motors")
 
         def azimuth():
             return Dish.sensor.euler[0]
@@ -45,16 +41,15 @@ class Dish:
             step_pin=27,
             dir_pin=4,
             enable_pin=22,
-            # resolution=400,
             pwm=HardwarePWM(pwm_channel=2, hz=1, chip=2),
             sensor=Dish.sensor,
-            position_callback=azimuth)
+            position_callback=azimuth
+        )
 
         Dish.elevation_motor = ControlledStepper(
             step_pin=24,
             dir_pin=17,
             enable_pin=23,
-            # resolution=400,
             pwm=HardwarePWM(pwm_channel=3, hz=1, chip=2),
             sensor=Dish.sensor,
             position_callback=elevation
@@ -64,16 +59,62 @@ class Dish:
         Dish.elevation_motor.tune(-1, 0, -2.5)
 
     @staticmethod
-    def setup_sensors():
+    def _setup_sensors():
+        logger.debug("setup sensors")
+
         i2c = board.I2C()
         Dish.sensor = BNO055_I2C(i2c)
+
+    @staticmethod
+    def calibrate(calibration_time=4):
+        logger.debug("Calibrating...")
+
+        # Keep still at 6 different positions
+        logger.debug("Calibrating Accelerometer")
+        time.sleep(calibration_time)
+        Dish.azimuth_motor.move_angle(degrees=45)
+        time.sleep(calibration_time)
+        Dish.elevation_motor.move_angle(degrees=45)
+        time.sleep(calibration_time)
+        Dish.azimuth_motor.move_angle(degrees=-90)
+        time.sleep(calibration_time)
+        Dish.elevation_motor.move_angle(degrees=-90)
+        time.sleep(calibration_time)
+        Dish.azimuth_motor.move_angle(degrees=45)
+        time.sleep(calibration_time)
+        Dish.elevation_motor.move_angle(degrees=45)
+        logger.debug("Accelerometer Calibrated!")
+
+        # Smooth movement
+        logger.debug("Calibrating Magnetometer")
+        Dish.elevation_motor.move_angle(degrees=20)
+        Dish.azimuth_motor.move_angle(degrees=20)
+        Dish.elevation_motor.move_angle(degrees=-20)
+        Dish.azimuth_motor.move_angle(degrees=20)
+        Dish.elevation_motor.move_angle(degrees=-20)
+        Dish.azimuth_motor.move_angle(degrees=-20)
+        Dish.elevation_motor.move_angle(degrees=20)
+        Dish.azimuth_motor.move_angle(degrees=-20)
+
+        Dish.elevation_motor.move_angle(degrees=20)
+        Dish.azimuth_motor.move_angle(degrees=-20)
+        Dish.elevation_motor.move_angle(degrees=-20)
+        Dish.azimuth_motor.move_angle(degrees=-20)
+        Dish.elevation_motor.move_angle(degrees=-20)
+        Dish.azimuth_motor.move_angle(degrees=20)
+        Dish.elevation_motor.move_angle(degrees=20)
+        Dish.azimuth_motor.move_angle(degrees=20)
+
+        # TODO: wait till completed
+        logger.debug("Accelerometer Calibrated!")
+        logger.info(f"Calibration Complete: {Dish.sensor.calibration_status}")
 
     @staticmethod
     def set_target(azimuth, elevation):
         logger.info(f"Setting target: {azimuth}, {elevation}")
 
-        Dish.azimuth_motor.move_to_sync(degrees=azimuth)
-        Dish.elevation_motor.move_to_sync(degrees=elevation)
+        Dish.azimuth_motor.set_target(degrees=azimuth)
+        Dish.elevation_motor.set_target(degrees=elevation)
 
     @staticmethod
     def tune_pid(p, i, d, elevation=False):
@@ -100,3 +141,7 @@ class Dish:
             Dish.elevation_motor.stop()
         except Exception as e:
             logger.error(str(e))
+
+    @staticmethod
+    def log():
+        pass
