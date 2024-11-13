@@ -103,7 +103,6 @@ class Dish:
 
         # TODO: wait till completed
         logger.debug("Accelerometer Calibrated!")
-        Dish.stop()
 
         logger.info(f"Calibration Complete: {Dish.sensor.calibration_status}")
 
