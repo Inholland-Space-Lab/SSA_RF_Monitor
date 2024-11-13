@@ -62,7 +62,7 @@ class Dish:
         Dish.sensor = BNO055_I2C(i2c)
 
     @staticmethod
-    def calibrate(calibration_time=4):
+    def calibrate(calibration_time=20):
         logger.debug("Calibrating...")
 
         # Keep still at 6 different positions
@@ -103,6 +103,8 @@ class Dish:
 
         # TODO: wait till completed
         logger.debug("Accelerometer Calibrated!")
+        Dish.stop()
+
         logger.info(f"Calibration Complete: {Dish.sensor.calibration_status}")
 
     @staticmethod
