@@ -38,20 +38,16 @@ class Dish:
             return Dish.sensor.euler[1]
 
         Dish.azimuth_motor = Stepper(
-            step_pin=27,
             dir_pin=4,
             enable_pin=22,
             pwm=HardwarePWM(pwm_channel=2, hz=1, chip=2),
-            sensor=Dish.sensor,
             position_callback=azimuth
         )
 
         Dish.elevation_motor = Stepper(
-            step_pin=24,
             dir_pin=17,
             enable_pin=23,
             pwm=HardwarePWM(pwm_channel=3, hz=1, chip=2),
-            sensor=Dish.sensor,
             position_callback=elevation
         )
 
