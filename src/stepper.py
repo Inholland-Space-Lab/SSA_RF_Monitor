@@ -118,7 +118,7 @@ class Stepper():
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup([dir_pin, enable_pin], GPIO.OUT)
-        self.home()
+        # self.home()
 
     def _worker(self):
         # Continuously check for jobs in the queue
