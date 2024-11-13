@@ -176,17 +176,18 @@ class Stepper():
             logger.warning(
                 f"Trying to do steps while pid is active, ignoring step command")
             return
+        duration = abs(step_count/velocity)
 
-        logger.debug(f"doing {step_count} steps")
+        logger.debug(f"Doing {step_count} steps. Will take {duration} seconds")
         GPIO.output(self.enable_pin, GPIO.HIGH)
         # self.position += step_count
-        if step_count > 0:
-            GPIO.output(self.dir_pin, GPIO.LOW)
-        else:
-            GPIO.output(self.dir_pin, GPIO.HIGH)
+        # if step_count > 0:
+        #     GPIO.output(self.dir_pin, GPIO.LOW)
+        # else:
+        #     GPIO.output(self.dir_pin, GPIO.HIGH)
 
         self._set_speed(velocity)
-        time.sleep(step_count/velocity)
+        time.sleep(duration)
         self._set_speed(0)
 
     def move_angle(self, degrees=None, radians=None):
