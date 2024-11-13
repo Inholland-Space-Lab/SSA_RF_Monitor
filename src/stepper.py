@@ -171,7 +171,7 @@ class Stepper():
     def do_steps_sync(self, *args):
         self.job_queue.put(args)
 
-    def do_steps(self, step_count, velocity=500, *args):
+    def do_steps(self, step_count, velocity=1000, *args):
         if self.do_pid:
             logger.warning(
                 f"Trying to do steps while pid is active, ignoring step command")
@@ -200,8 +200,20 @@ class Stepper():
             rev = radians / (2*math.pi)
 
         steps = rev * self.steps_per_rev
+        self.do_steps(steps)
+        duration = steps * 1000
+        return duration
+
+    def move_angle_sync(self, degrees=None, radians=None):
+        rev = 0
+        if degrees:
+            rev = degrees / 360
+        elif radians:
+            rev = radians / (2*math.pi)
+
+        steps = rev * self.steps_per_rev
         self.do_steps_sync(steps)
-        duration = steps * 500
+        duration = steps * 1000
         return duration
 
     def tune(self, p, i, d):

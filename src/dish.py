@@ -67,18 +67,25 @@ class Dish:
 
         # Keep still at 6 different positions
         logger.debug("Calibrating Accelerometer")
+        move_time = 0
         time.sleep(calibration_time)
         move_time = Dish.azimuth_motor.move_angle(degrees=45)
+        move_time = 0
         time.sleep(calibration_time + move_time)
         move_time = Dish.elevation_motor.move_angle(degrees=45)
+        move_time = 0
         time.sleep(calibration_time + move_time)
         move_time = Dish.azimuth_motor.move_angle(degrees=-90)
+        move_time = 0
         time.sleep(calibration_time + move_time)
         move_time = Dish.elevation_motor.move_angle(degrees=-90)
+        move_time = 0
         time.sleep(calibration_time + move_time)
         move_time = Dish.azimuth_motor.move_angle(degrees=45)
+        move_time = 0
         time.sleep(calibration_time + move_time)
         move_time = Dish.elevation_motor.move_angle(degrees=45)
+        move_time = 0
         time.sleep(calibration_time + move_time)
         logger.debug("Accelerometer Calibrated!")
 
@@ -105,7 +112,7 @@ class Dish:
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
 
         # TODO: wait till completed
-        time.sleep(max(azimuth_move_time, elevation_move_time))
+        # time.sleep(max(azimuth_move_time, elevation_move_time))
         logger.debug("Accelerometer Calibrated!")
 
         logger.info(f"Calibration Complete: {Dish.sensor.calibration_status}")
