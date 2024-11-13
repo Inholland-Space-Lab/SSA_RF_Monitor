@@ -80,6 +80,8 @@ class Stepper():
 
     def __str__(self):
         return \
+            f"a: {self.acceleration:.4f}\n" + \
+            f"v: {self.velocity:.4f}\n" + \
             f"position: {self.sensor_position}\n" + \
             f"goal: {self.goal}\n" + \
             f"pid enabled: {self.do_pid}\n" + \
@@ -249,6 +251,7 @@ class Stepper():
 
     def _calc_pid(self):
         if not self.do_pid:
+            logger.debug("PID DISABLED")
             return
 
         # update time
@@ -258,11 +261,11 @@ class Stepper():
 
         # update dynamics
         self.acceleration = self.pid(self.distance)
-        self.pid.sample_time
         self.velocity += self.acceleration * dt
         self.velocity = max(-self.max_velocity,
                             min(self.max_velocity, self.velocity))
-        logger.debug(f"calc pid: {self.velocity}")
+        logger.debug(f"calc pid: {self.velocity}"
+                     f"dt: {dt}")
         self._set_speed(self.velocity)
 
         # (p, i, d) = self.pid.components
