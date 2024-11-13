@@ -5,7 +5,6 @@ import socketserver
 from http import server
 from config import Config
 from dish import Dish
-from stepper import ControlledStepper
 
 logger = logging.getLogger(__name__)
 
