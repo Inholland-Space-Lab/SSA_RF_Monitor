@@ -111,8 +111,8 @@ class Dish:
 
     @staticmethod
     def toggle_pid():
-        # Dish.azimuth_motor.stop()
-        # Dish.elevation_motor.stop()
+        Dish.azimuth_motor.stop()
+        Dish.elevation_motor.stop()
         logger.debug("Toggle PID: ")
         if Dish.pid_active:
             logger.debug("stop")
@@ -152,8 +152,8 @@ class Dish:
         # stop each of the motors
         logger.info('stopping motors')
         try:
-            Dish.azimuth_motor.stop()
-            Dish.elevation_motor.stop()
+            Dish.azimuth_motor.disable()
+            Dish.elevation_motor.disable()
         except Exception as e:
             logger.error(str(e))
 

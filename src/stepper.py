@@ -157,11 +157,14 @@ class Stepper():
         self.do_steps_sync(-int(self.steps_per_rev / 4))
 
     def stop(self):
-        self.stop_pid()
         self.pwm.change_frequency(1)
         self.pwm.stop()
         GPIO.output(self.enable_pin, GPIO.LOW)
-        # GPIO.cleanup([self.enable_pin, self.dir_pin])
+
+    def disable(self):
+        self.stop_pid()
+        self.stop()
+        GPIO.cleanup([self.enable_pin, self.dir_pin])
 
     def _set_speed(self, velocity: float):
         """Set the step pin to pulse at the specified frequency."""
@@ -251,6 +254,7 @@ class Stepper():
         self._calc_pid()
 
     def stop_pid(self):
+        self.stop()
         self._last_time = 0
         self.do_pid = False
 
