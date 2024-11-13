@@ -157,6 +157,8 @@ class Stepper():
         self.do_steps_sync(-int(self.steps_per_rev / 4))
 
     def stop(self):
+        logger.debug("stopping motor")
+        self.velocity = 0
         self.pwm.change_frequency(1)
         self.pwm.stop()
         GPIO.output(self.enable_pin, GPIO.LOW)
