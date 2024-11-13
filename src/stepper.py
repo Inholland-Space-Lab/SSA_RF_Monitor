@@ -171,7 +171,7 @@ class Stepper():
     def do_steps_sync(self, *args):
         self.job_queue.put(args)
 
-    def do_steps(self, step_count, velocity=100, *args):
+    def do_steps(self, step_count, velocity=500, *args):
         if self.do_pid:
             logger.warning(
                 f"Trying to do steps while pid is active, ignoring step command")
