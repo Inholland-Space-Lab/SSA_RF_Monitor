@@ -17,6 +17,7 @@ class Dish:
     azimuth_motor: Stepper
     elevation_motor: Stepper
     sensor: BNO055_I2C
+    pid_active: False
 
     @staticmethod
     def start():
@@ -110,10 +111,10 @@ class Dish:
 
     @staticmethod
     def toggle_pid():
-        Dish.azimuth_motor.stop()
-        Dish.elevation_motor.stop()
+        # Dish.azimuth_motor.stop()
+        # Dish.elevation_motor.stop()
         logger.debug("Toggle PID: ")
-        if Dish.azimuth_motor.do_pid or Dish.elevation_motor.do_pid:
+        if Dish.pid_active:
             logger.debug("stop")
             Dish.azimuth_motor.stop_pid()
             Dish.elevation_motor.stop_pid()
@@ -121,6 +122,7 @@ class Dish:
             logger.debug("start")
             Dish.azimuth_motor.start_pid()
             Dish.elevation_motor.start_pid()
+        Dish.pid_active = not Dish.pid_active
 
     @staticmethod
     def set_target(azimuth, elevation):
