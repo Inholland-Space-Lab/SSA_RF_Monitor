@@ -17,7 +17,7 @@ class Dish:
     azimuth_motor: Stepper
     elevation_motor: Stepper
     sensor: BNO055_I2C
-    pid_active: False
+    pid_active = False
 
     @staticmethod
     def start():
