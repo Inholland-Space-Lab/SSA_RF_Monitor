@@ -171,7 +171,7 @@ class Dish:
     @staticmethod
     def log():
         logger.debug(
-            f"Azimuth:\n{Dish.azimuth_motor}"
+            f"\nAzimuth:\n{Dish.azimuth_motor}"
             f"Elevation:\n{Dish.elevation_motor}"
             f"Sensor pos: {Dish.sensor.euler}\n"
             f"Sensor calib: {Dish.sensor.calibration_status}"

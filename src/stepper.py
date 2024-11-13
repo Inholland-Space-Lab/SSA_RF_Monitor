@@ -80,7 +80,7 @@ class Stepper():
 
     def __str__(self):
         return \
-            f"position: {self.sensor_position}" + \
+            f"position: {self.sensor_position}\n" + \
             f"goal: {self.goal}\n" + \
             f"pid enabled: {self.do_pid}\n" + \
             f"pid tunings: {self.pid.tunings}\n" + \
@@ -262,9 +262,10 @@ class Stepper():
         self.velocity += self.acceleration * dt
         self.velocity = max(-self.max_velocity,
                             min(self.max_velocity, self.velocity))
+        logger.debug(f"calc pid: {self.velocity}")
         self._set_speed(self.velocity)
 
-        (p, i, d) = self.pid.components
+        # (p, i, d) = self.pid.components
         # (yaw, roll, pitch) = self.sensor.euler
         # sys, gyro, accel, mag = self.sensor.calibration_status
 
