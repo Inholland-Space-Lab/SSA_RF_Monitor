@@ -181,10 +181,12 @@ class Stepper():
         logger.debug(f"Doing {step_count} steps. Will take {duration} seconds")
         GPIO.output(self.enable_pin, GPIO.HIGH)
         # self.position += step_count
-        # if step_count > 0:
-        #     GPIO.output(self.dir_pin, GPIO.LOW)
-        # else:
-        #     GPIO.output(self.dir_pin, GPIO.HIGH)
+        if step_count > 0:
+            velocity = abs(velocity)
+            # GPIO.output(self.dir_pin, GPIO.LOW)
+        else:
+            velocity = -abs(velocity)
+            # GPIO.output(self.dir_pin, GPIO.HIGH)
 
         self._set_speed(velocity)
         time.sleep(duration)
