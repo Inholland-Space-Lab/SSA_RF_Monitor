@@ -93,22 +93,26 @@ class Dish:
         logger.debug("Calibrating Magnetometer")
         elevation_move_time = 0
         azimuth_move_time = 0
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(degrees=20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(
+            degrees=-20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(
+            degrees=-20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(degrees=20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
 
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(degrees=20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(
+            degrees=-20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(
+            degrees=-20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
-        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle_sync(degrees=20)
         azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
 
         # TODO: wait till completed
