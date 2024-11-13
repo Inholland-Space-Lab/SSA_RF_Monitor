@@ -62,46 +62,50 @@ class Dish:
         Dish.sensor = BNO055_I2C(i2c)
 
     @staticmethod
-    def calibrate(calibration_time=20):
+    def calibrate(calibration_time=2):
         logger.debug("Calibrating...")
 
         # Keep still at 6 different positions
         logger.debug("Calibrating Accelerometer")
         time.sleep(calibration_time)
-        Dish.azimuth_motor.move_angle(degrees=45)
-        time.sleep(calibration_time)
-        Dish.elevation_motor.move_angle(degrees=45)
-        time.sleep(calibration_time)
-        Dish.azimuth_motor.move_angle(degrees=-90)
-        time.sleep(calibration_time)
-        Dish.elevation_motor.move_angle(degrees=-90)
-        time.sleep(calibration_time)
-        Dish.azimuth_motor.move_angle(degrees=45)
-        time.sleep(calibration_time)
-        Dish.elevation_motor.move_angle(degrees=45)
+        move_time = Dish.azimuth_motor.move_angle(degrees=45)
+        time.sleep(calibration_time + move_time)
+        move_time = Dish.elevation_motor.move_angle(degrees=45)
+        time.sleep(calibration_time + move_time)
+        move_time = Dish.azimuth_motor.move_angle(degrees=-90)
+        time.sleep(calibration_time + move_time)
+        move_time = Dish.elevation_motor.move_angle(degrees=-90)
+        time.sleep(calibration_time + move_time)
+        move_time = Dish.azimuth_motor.move_angle(degrees=45)
+        time.sleep(calibration_time + move_time)
+        move_time = Dish.elevation_motor.move_angle(degrees=45)
+        time.sleep(calibration_time + move_time)
         logger.debug("Accelerometer Calibrated!")
 
         # Smooth movement
         logger.debug("Calibrating Magnetometer")
-        Dish.elevation_motor.move_angle(degrees=20)
-        Dish.azimuth_motor.move_angle(degrees=20)
-        Dish.elevation_motor.move_angle(degrees=-20)
-        Dish.azimuth_motor.move_angle(degrees=20)
-        Dish.elevation_motor.move_angle(degrees=-20)
-        Dish.azimuth_motor.move_angle(degrees=-20)
-        Dish.elevation_motor.move_angle(degrees=20)
-        Dish.azimuth_motor.move_angle(degrees=-20)
+        elevation_move_time = 0
+        azimuth_move_time = 0
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
 
-        Dish.elevation_motor.move_angle(degrees=20)
-        Dish.azimuth_motor.move_angle(degrees=-20)
-        Dish.elevation_motor.move_angle(degrees=-20)
-        Dish.azimuth_motor.move_angle(degrees=-20)
-        Dish.elevation_motor.move_angle(degrees=-20)
-        Dish.azimuth_motor.move_angle(degrees=20)
-        Dish.elevation_motor.move_angle(degrees=20)
-        Dish.azimuth_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=-20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=-20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
+        elevation_move_time += Dish.elevation_motor.move_angle(degrees=20)
+        azimuth_move_time += Dish.azimuth_motor.move_angle(degrees=20)
 
         # TODO: wait till completed
+        time.sleep(max(azimuth_move_time, elevation_move_time))
         logger.debug("Accelerometer Calibrated!")
 
         logger.info(f"Calibration Complete: {Dish.sensor.calibration_status}")

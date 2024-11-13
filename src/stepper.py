@@ -201,6 +201,8 @@ class Stepper():
 
         steps = rev * self.steps_per_rev
         self.do_steps_sync(steps)
+        duration = steps * 500
+        return duration
 
     def tune(self, p, i, d):
         self.pid.Kp = p
