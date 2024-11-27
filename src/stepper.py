@@ -52,7 +52,7 @@ class Stepper():
         except Exception as e:
             logger.warning(f"position callback not implemented!")
             logger.error(str(e))
-            # self.stop_pid()
+            self.stop_pid()
             return 0
 
     # get the distance from the current position to the goal
