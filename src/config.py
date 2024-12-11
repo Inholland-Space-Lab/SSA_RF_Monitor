@@ -4,6 +4,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Copied from a previous project, a bit overkill for this project.
+# Allows to create, save and load different configurations during runtime.
+# This would allow the dish to have different "modes" each with different properties.
+# Say we would have a GEO and LEO mode, you could load the leo config from the webinterface during runtime
+# This would then for example load different pid tunings more optimized for moving targets
+# Right now this only loads the port that the webserver is hosted on, which has no reason to change during runtime
+
 
 class Config():
     configFolder = "config/"
