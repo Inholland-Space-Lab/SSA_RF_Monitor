@@ -15,12 +15,15 @@ from dish import Dish
 from lcd import LCD
 from server import Server
 
+# This file is where the python program starts.
 
 # Configure logs to log both in the console and to a file
 logger = logging.getLogger(__name__)
 logging.basicConfig(handlers=[logging.FileHandler("logs/latest.log"),
                               logging.StreamHandler(sys.stdout)],
                     encoding='utf-8', level=logging.DEBUG)
+
+# this runs when the program exits or crashes
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -33,18 +36,21 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-if __name__ == "__main__":
-    # Register our shutdown handler to be called at signal "terminate"
+if __name__ == "__main__":  # This runs on startup:
+
+    # Register our shutdown handler to be called at signal "terminate" (sigterm)
+    # This signal is emitted when something in the program has crashed
+    # Therefore we can run the shutdown handler after the program has crashed
     signal.signal(signal.SIGTERM, sigterm_handler)
 
-    # Start the server and add the camera(s)
+    # Start all the parts of the progarm
     logger.info("starting")
     try:
-        Config.start()
-        LCD.start()
-        Dish.start()
-        Server.start()
-    except Exception as e:
+        Config.start()  # not important (yet)
+        LCD.start()  # display ip address on lcd screen
+        Dish.start()  # the motors and sensor
+        Server.start()  # the web interface (this contains an infinite loop (waiting for user input) so it goes last)
+    except Exception as e:  # This runs when something crashed
         logger.error(str(e))
-    finally:
-        sigterm_handler(signal.SIGTERM, 0)
+    finally:  # This always runs when the rest is done, be it a crash or simply when the program finished
+        sigterm_handler(signal.SIGTERM, 0)  # call the shutdown handler
